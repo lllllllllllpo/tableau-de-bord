@@ -114,6 +114,25 @@
   .view{display:none} .view.on{display:block}
   .foot{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-soft)}
 
+  /* ---- Bilan ---- */
+  .bilan{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:16px 18px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .bilan h3{margin:0 0 6px;font-size:16px}
+  .bilan p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.5}
+  .bilan ul{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+  .bilan li{font-size:13px;display:flex;gap:9px;align-items:flex-start}
+  .bilan li .dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:5px;background:var(--ink-soft)}
+  .bilan li.red .dot{background:var(--red)} .bilan li.amber .dot{background:var(--amber)}
+  .bilan li b{color:var(--ink)}
+  .cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;
+    border:1px solid var(--navy);background:var(--card);border-radius:12px;padding:16px 18px}
+  .cta .txt b{display:block;font-size:15px;margin-bottom:2px}
+  .cta .txt span{font-size:12.5px;color:var(--ink-soft)}
+  .cta a.book{font:inherit;font-size:14px;font-weight:600;padding:11px 18px;background:var(--navy);color:#fff;
+    border-radius:9px;text-decoration:none;white-space:nowrap}
+  .cta a.book:hover{background:var(--navy-soft)}
+  @media (prefers-color-scheme:dark){.cta a.book{color:#10131a}}
+  :root[data-theme=dark] .cta a.book{color:#10131a}
+
   @media print{
     .topbar .actions,.form{display:none}
     .wrap{grid-template-columns:1fr}
@@ -256,6 +275,7 @@
         <button class="tab on" data-v="argent" type="button">Argent</button>
         <button class="tab" data-v="ope" type="button">Opérationnel</button>
         <button class="tab" data-v="sante" type="button">Santé</button>
+        <button class="tab" data-v="bilan" type="button">Bilan</button>
       </div>
     </div>
 
@@ -326,6 +346,18 @@
           <div class="top"><span class="label">Budget acquisition / mois</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 11l18-7-7 18-3-8z"/></svg></span></div>
           <div class="val num" data-val>—</div><div class="sub" data-sub></div>
         </div>
+      </div>
+    </div>
+
+    <!-- Vue Bilan -->
+    <div class="view" id="v-bilan">
+      <div class="bilan" id="bilanBody"></div>
+      <div class="cta">
+        <div class="txt">
+          <b>On en parle 15 minutes ?</b>
+          <span>Un échange court avec Julien pour prioriser vos actions — sans engagement.</span>
+        </div>
+        <a class="book" href="https://calendar.app.google/VSPtFwQLM9pYauXv9" target="_blank" rel="noopener">Réserver un créneau →</a>
       </div>
     </div>
 
@@ -548,6 +580,32 @@
     } else set('k-mktg','—','<span class="empty">à remplir</span>');
 
     renderAlert(issues);
+    renderBilan(issues);
+  }
+
+  function renderBilan(issues){
+    var el=$('#bilanBody');
+    var co=(f.co.value||'').trim(), nom=co||'votre entreprise';
+    var filled = Object.keys(f).some(function(k){return has(f[k]);});
+    if(!filled){
+      el.innerHTML='<h3>Votre bilan express</h3><p>Remplissez vos chiffres à gauche : cet espace résume en clair la situation de '+nom+' et les points à traiter en priorité — puis vous pouvez réserver 15 minutes pour en parler.</p>';
+      return;
+    }
+    issues.sort(function(x,y){return y.sev-x.sev;});
+    var reds=issues.filter(function(i){return i.sev>=3;}).length;
+    var intro;
+    if(!issues.length){
+      intro='Sur les chiffres saisis, aucun signal rouge : '+nom+' est bien tenue. Le vrai sujet devient la croissance — comment passer à l\'étape suivante sans casser ce qui marche.';
+    } else if(reds){
+      intro=reds+' point'+(reds>1?'s':'')+' critique'+(reds>1?'s':'')+' ressort'+(reds>1?'ent':'')+' pour '+nom+', et '+issues.length+' au total à traiter. Ce sont des sujets à prendre vite, avant qu\'ils ne pèsent sur la trésorerie ou l\'équipe.';
+    } else {
+      intro=nom+' tient la route, avec '+issues.length+' point'+(issues.length>1?'s':'')+' à surveiller pour ne pas laisser la situation se dégrader.';
+    }
+    var lis=issues.map(function(i){
+      var cls=i.sev>=3?'red':'amber';
+      return '<li class="'+cls+'"><span class="dot"></span><span><b>'+i.tag+'</b> — '+i.title+'</span></li>';
+    }).join('');
+    el.innerHTML='<h3>Le bilan de '+nom+'</h3><p>'+intro+'</p>'+(lis?'<ul>'+lis+'</ul>':'');
   }
 
   function renderAlert(issues){
