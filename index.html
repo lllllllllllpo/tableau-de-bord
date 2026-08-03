@@ -39,6 +39,11 @@
   .brand{display:flex;flex-direction:column;gap:2px}
   .brand b{font-size:15px;letter-spacing:.2px}
   .brand span{font-size:12px;color:var(--ink-soft)}
+  .lab0{display:inline-block;font-weight:800;font-size:10.5px;letter-spacing:.6px;vertical-align:middle;
+    padding:2px 7px;border:1px solid var(--navy);border-radius:5px;color:var(--navy);margin-left:6px}
+  a.lab0{text-decoration:none} a.lab0:hover{background:var(--navy);color:#fff}
+  @media (prefers-color-scheme:dark){a.lab0:hover{color:#10131a}}
+  :root[data-theme=dark] a.lab0:hover{color:#10131a}
   .actions{display:flex;gap:8px}
   button.btn{font:inherit;font-size:13px;padding:8px 13px;border:1px solid var(--line-strong);
     background:var(--card);color:var(--ink);border-radius:7px;cursor:pointer}
@@ -120,7 +125,7 @@
 
 <div class="topbar">
   <div class="brand">
-    <b>Cockpit de pilotage — atelier 10 minutes</b>
+    <b>Cockpit de pilotage — atelier 10 minutes <span class="lab0" id="lab0">Lab0</span></b>
     <span>Choisissez votre secteur, remplissez les cases. Le tableau de bord se construit à droite.</span>
   </div>
   <div class="actions">
@@ -134,8 +139,8 @@
 
   <!-- FORMULAIRE -->
   <form class="form" id="form" autocomplete="off">
-    <h1>Vos 8 chiffres</h1>
-    <p class="lede">Répondez au feeling, pas besoin de sortir vos documents. On affine ensuite.</p>
+    <h1>Vos chiffres clés</h1>
+    <p class="lede">Répondez au feeling — 8 chiffres de pilotage + jusqu'à 4 sur la santé de l'entreprise. On affine ensuite.</p>
 
     <fieldset>
       <legend>0 · Votre activité</legend>
@@ -214,6 +219,30 @@
         <input id="cycle" type="number" inputmode="numeric" min="0" placeholder="Ex. 15">
       </div>
     </fieldset>
+
+    <fieldset>
+      <legend>4 · La santé de l'entreprise <span class="lab0">Lab0</span></legend>
+      <div class="field">
+        <label><span class="step">9</span>Ce qu'il vous reste sur 100 € encaissés (€)</label>
+        <div class="hint">Votre marge nette, au feeling. « Après tout payé, il me reste combien sur 100 € ? »</div>
+        <input id="margeNet" type="number" inputmode="numeric" min="0" max="100" placeholder="Ex. 12">
+      </div>
+      <div class="field">
+        <label><span class="step">10</span>Évolution du CA sur 12 mois (%)</label>
+        <div class="hint">Peut être négatif. Ex. +8 pour une hausse, -5 pour une baisse.</div>
+        <input id="tendance" type="number" inputmode="numeric" placeholder="Ex. 8">
+      </div>
+      <div class="field">
+        <label><span class="step">11</span>Part du CA avec votre plus gros client (%)</label>
+        <div class="hint">Mesure votre dépendance commerciale.</div>
+        <input id="depClient" type="number" inputmode="numeric" min="0" max="100" placeholder="Ex. 25">
+      </div>
+      <div class="field">
+        <label><span class="step">12</span>Budget mensuel pub / contenu / communication (€)</label>
+        <div class="hint">Ce que vous investissez chaque mois pour attirer de nouveaux clients.</div>
+        <input id="mktgEur" type="number" inputmode="numeric" min="0" placeholder="Ex. 1500">
+      </div>
+    </fieldset>
   </form>
 
   <!-- COCKPIT -->
@@ -226,6 +255,7 @@
       <div class="tabs">
         <button class="tab on" data-v="argent" type="button">Argent</button>
         <button class="tab" data-v="ope" type="button">Opérationnel</button>
+        <button class="tab" data-v="sante" type="button">Santé</button>
       </div>
     </div>
 
@@ -277,6 +307,28 @@
       </div>
     </div>
 
+    <!-- Vue Santé -->
+    <div class="view" id="v-sante">
+      <div class="kpis">
+        <div class="kpi" id="k-marge">
+          <div class="top"><span class="label">Marge nette</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 15l5-5 4 3 6-7"/><path d="M15 6h5v5"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-tend">
+          <div class="top"><span class="label">Tendance CA · 12 mois</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-dep">
+          <div class="top"><span class="label">Dépendance · gros client</span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12V3a9 9 0 0 1 7.8 4.5z"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-mktg">
+          <div class="top"><span class="label">Budget acquisition / mois</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 11l18-7-7 18-3-8z"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+      </div>
+    </div>
+
     <div class="foot" id="foot">Données saisies sur votre appareil uniquement — rien n'est envoyé.</div>
   </section>
 </div>
@@ -296,7 +348,7 @@
     q8label:'Temps moyen entre commande et livraison', q8hint:'En jours.',
     cDevis:'Ventes en attente', cWip:'En-cours (dossiers)', cDelais:'Qualité de service',
     cBacklog:'File d\'attente', cCycle:'Temps de traitement',
-    tTreso:60, tDelais:90, tCycle:15, wipHigh:8
+    tTreso:60, tDelais:90, tCycle:15, wipHigh:8, tMarge:8
   };
   function P(o){ var r={}; for(var k in BASE) r[k]=BASE[k]; for(var j in o) r[j]=o[j]; return r; }
   var PROFILES = {
@@ -317,7 +369,7 @@
       q6label:'Missions en attente de démarrage',
       q8label:'Temps moyen entre signature et livrable',
       cDevis:'Propositions en attente', cWip:'En-cours (missions)', cDelais:'Respect des délais',
-      cBacklog:'File d\'attente', cCycle:'Délai de livraison', tTreso:45, tDelais:90, tCycle:21, wipHigh:8 }),
+      cBacklog:'File d\'attente', cCycle:'Délai de livraison', tTreso:45, tDelais:90, tCycle:21, wipHigh:8, tMarge:15 }),
     commerce: P({ unit:'commande', unitPl:'commandes',
       q3label:'Commandes clients à honorer', q3hint:'Montant et nombre en attente.',
       q4label:'Commandes / dossiers en cours',
@@ -325,7 +377,7 @@
       q6label:'Réassorts / commandes fournisseurs en attente',
       q8label:'Délai moyen de réassort / mise à disposition',
       cDevis:'Commandes à honorer', cWip:'En-cours', cDelais:'Clients servis OK',
-      cBacklog:'Réassorts en attente', cCycle:'Délai de mise à dispo', tTreso:60, tDelais:95, tCycle:7, wipHigh:12 }),
+      cBacklog:'Réassorts en attente', cCycle:'Délai de mise à dispo', tTreso:60, tDelais:95, tCycle:7, wipHigh:12, tMarge:5 }),
     restauration: P({ unit:'service', unitPl:'services',
       q3label:'Réservations & événements à venir', q3hint:'Montant estimé et nombre.',
       q4label:'Événements / traiteur en préparation',
@@ -333,7 +385,7 @@
       q6label:'Demandes de résa / devis en attente',
       q8label:'Délai moyen de réponse à une demande', q8hint:'En jours.',
       cDevis:'Résas & événements', cWip:'En préparation', cDelais:'Services sans accroc',
-      cBacklog:'Demandes en attente', cCycle:'Délai de réponse', tTreso:45, tDelais:95, tCycle:2, wipHigh:6 }),
+      cBacklog:'Demandes en attente', cCycle:'Délai de réponse', tTreso:45, tDelais:95, tCycle:2, wipHigh:6, tMarge:6 }),
     ecommerce: P({ unit:'commande', unitPl:'commandes',
       q3label:'Paniers / commandes à traiter', q3hint:'Montant et nombre.',
       q4label:'Commandes en cours de préparation',
@@ -349,7 +401,7 @@
       q6label:'Liste d\'attente / RDV à planifier',
       q8label:'Délai moyen de prise en charge',
       cDevis:'RDV / devis en attente', cWip:'Dossiers en cours', cDelais:'Traités à temps',
-      cBacklog:'Liste d\'attente', cCycle:'Délai de prise en charge', tTreso:60, tDelais:95, tCycle:7, wipHigh:15 }),
+      cBacklog:'Liste d\'attente', cCycle:'Délai de prise en charge', tTreso:60, tDelais:95, tCycle:7, wipHigh:15, tMarge:15 }),
     industrie: P({ unit:'commande', unitPl:'commandes',
       q3label:'Commandes / devis en attente', q3hint:'Montant et nombre.',
       q4label:'Ordres de fabrication en cours',
@@ -357,14 +409,15 @@
       q6label:'Carnet de commandes en attente',
       q8label:'Délai moyen commande → expédition',
       cDevis:'Commandes en attente', cWip:'OF en cours', cDelais:'Livrées à temps',
-      cBacklog:'Carnet de commandes', cCycle:'Délai de production', tTreso:60, tDelais:95, tCycle:20, wipHigh:15 })
+      cBacklog:'Carnet de commandes', cCycle:'Délai de production', tTreso:60, tDelais:95, tCycle:20, wipHigh:15, tMarge:7 })
   };
   var p = PROFILES.generique;
 
   var f = {
     co:$('#co'), ca:$('#ca'), treso:$('#treso'), devisEur:$('#devisEur'), devisNb:$('#devisNb'),
     wip:$('#wip'), delais:$('#delais'), backlog:$('#backlog'),
-    cleNom:$('#cleNom'), cleCharge:$('#cleCharge'), cycle:$('#cycle')
+    cleNom:$('#cleNom'), cleCharge:$('#cleCharge'), cycle:$('#cycle'),
+    margeNet:$('#margeNet'), tendance:$('#tendance'), depClient:$('#depClient'), mktgEur:$('#mktgEur')
   };
   function n(el){ var v = parseFloat((el.value||'').replace(',','.')); return isNaN(v)?null:v; }
   function has(el){ return el.value!==''; }
@@ -386,7 +439,7 @@
     $('#lbl-delais').textContent = p.cDelais; $('#lbl-backlog').textContent = p.cBacklog;
     $('#lbl-cycle').textContent = p.cCycle;
     $('#foot').innerHTML = 'Données saisies sur votre appareil uniquement — rien n\'est envoyé. Repères '+
-      '(secteur)&nbsp;: trésorerie '+p.tTreso+'&nbsp;j · qualité '+p.tDelais+'&nbsp;% · délai '+p.tCycle+'&nbsp;j.';
+      '(secteur)&nbsp;: trésorerie '+p.tTreso+'&nbsp;j · qualité '+p.tDelais+'&nbsp;% · délai '+p.tCycle+'&nbsp;j · marge '+p.tMarge+'&nbsp;%.';
   }
 
   function render(){
@@ -458,6 +511,41 @@
       else{sub='<span class="delta up">dans la cible</span>';}
       set('k-cycle', c+' j', sub, st);
     } else set('k-cycle','—','<span class="empty">à remplir</span>');
+
+    // Marge nette
+    if(has(f.margeNet)){
+      var m=n(f.margeNet), st=null, sub='', gap=m-p.tMarge;
+      if(m<p.tMarge/2){st='flag'; sub='<span class="delta down">'+gap+' pts</span> repère '+p.tMarge+' %'; issues.push({sev:3,tag:'Rentabilité',title:'Marge nette très faible ('+m+' %).',detail:'À ce niveau, le moindre imprévu efface le bénéfice. Il faut regarder les prix, les coûts fixes et les postes qui grignotent la marge.'});}
+      else if(m<p.tMarge){st='warn'; sub='<span class="delta flat">'+gap+' pts</span> repère '+p.tMarge+' %'; issues.push({sev:2,tag:'Rentabilité',title:'Marge nette sous le repère du secteur ('+p.tMarge+' %).',detail:'Vous travaillez, mais l\'entreprise garde peu. Un léger ajustement de prix ou de coûts change tout à cette échelle.'});}
+      else{sub='<span class="delta up">▲ '+gap+' pts</span> au-dessus du repère';}
+      set('k-marge', m+' %', sub, st);
+    } else set('k-marge','—','<span class="empty">à remplir</span>');
+
+    // Tendance CA 12 mois
+    if(has(f.tendance)){
+      var g=n(f.tendance), st=null, sub='';
+      if(g<=-10){st='flag'; sub='<span class="delta down">▼ '+g+' %</span> sur 12 mois'; issues.push({sev:3,tag:'Croissance',title:'Le chiffre d\'affaires recule nettement ('+g+' % sur 12 mois).',detail:'Une baisse installée attaque la trésorerie et le moral. Prioriser la reconquête clients et le commercial avant tout le reste.'});}
+      else if(g<0){st='warn'; sub='<span class="delta flat">▼ '+g+' %</span> sur 12 mois'; issues.push({sev:1,tag:'Croissance',title:'Chiffre d\'affaires en léger recul ('+g+' %).',detail:'À surveiller : un trimestre encore en baisse et la tendance se confirme.'});}
+      else{sub='<span class="delta up">▲ '+g+' %</span> sur 12 mois';}
+      set('k-tend', (g>0?'+':'')+g+' %', sub, st);
+    } else set('k-tend','—','<span class="empty">à remplir</span>');
+
+    // Dépendance gros client
+    if(has(f.depClient)){
+      var dc=n(f.depClient), st=null, sub='';
+      if(dc>=40){st='flag'; sub='<span class="delta down">risque élevé</span> concentration'; issues.push({sev:3,tag:'Dépendance',title:dc+' % du CA repose sur un seul client.',detail:'Si ce client part ou renégocie, l\'entreprise vacille. Diversifier le portefeuille clients est une priorité stratégique.'});}
+      else if(dc>=25){st='warn'; sub='<span class="delta flat">à surveiller</span> concentration'; issues.push({sev:2,tag:'Dépendance',title:'Un client pèse '+dc+' % de votre activité.',detail:'Confortable aujourd\'hui, fragile demain. Développer 2–3 comptes en parallèle réduit le risque.'});}
+      else{sub='<span class="delta up">portefeuille réparti</span>';}
+      set('k-dep', dc+' %', sub, st);
+    } else set('k-dep','—','<span class="empty">à remplir</span>');
+
+    // Budget acquisition / mois
+    if(has(f.mktgEur)){
+      var mk=n(f.mktgEur), st=null, sub='pub · contenu · communication', ca=has(f.ca)?n(f.ca):null;
+      if(ca && ca>0){ sub='<span class="chip">'+Math.round(mk/ca*100)+' % du CA</span> acquisition'; }
+      if(mk===0){st='warn'; sub='<span class="delta flat">aucun budget</span> acquisition'; issues.push({sev:1,tag:'Acquisition',title:'Aucun budget consacré à trouver de nouveaux clients.',detail:'La croissance repose alors seulement sur le bouche-à-oreille. Un budget régulier, même modeste, rend le flux de prospects prévisible.'});}
+      set('k-mktg', euro(mk), sub, st);
+    } else set('k-mktg','—','<span class="empty">à remplir</span>');
 
     renderAlert(issues);
   }
