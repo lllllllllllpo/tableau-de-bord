@@ -159,7 +159,7 @@
   <!-- FORMULAIRE -->
   <form class="form" id="form" autocomplete="off">
     <h1>Vos chiffres clés</h1>
-    <p class="lede">Répondez au feeling — 8 chiffres de pilotage + jusqu'à 4 sur la santé de l'entreprise. On affine ensuite.</p>
+    <p class="lede">Répondez au feeling — 8 chiffres de pilotage, 5 sur la santé de l'entreprise et la vôtre. On affine ensuite.</p>
 
     <fieldset>
       <legend>0 · Votre activité</legend>
@@ -261,6 +261,11 @@
         <div class="hint">Ce que vous investissez chaque mois pour attirer de nouveaux clients.</div>
         <input id="mktgEur" type="number" inputmode="numeric" min="0" placeholder="Ex. 1500">
       </div>
+      <div class="field">
+        <label><span class="step">13</span>Votre niveau de charge mentale, aujourd'hui</label>
+        <div class="hint">De 1 (tout est sous contrôle) à 10 (vous êtes submergé·e).</div>
+        <input id="mental" type="number" inputmode="numeric" min="1" max="10" placeholder="Ex. 7">
+      </div>
     </fieldset>
   </form>
 
@@ -344,6 +349,10 @@
         </div>
         <div class="kpi" id="k-mktg">
           <div class="top"><span class="label">Budget acquisition / mois</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 11l18-7-7 18-3-8z"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-mental">
+          <div class="top"><span class="label">Charge mentale · vous</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 4a5 5 0 0 0-5 5c0 1.6.8 2.6 1.6 3.4.4.4.4 1 .4 1.6v1a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-1c0-.6 0-1.2.4-1.6C16.2 11.6 17 10.6 17 9a5 5 0 0 0-5-5z"/><path d="M9.5 21h5"/></svg></span></div>
           <div class="val num" data-val>—</div><div class="sub" data-sub></div>
         </div>
       </div>
@@ -449,7 +458,8 @@
     co:$('#co'), ca:$('#ca'), treso:$('#treso'), devisEur:$('#devisEur'), devisNb:$('#devisNb'),
     wip:$('#wip'), delais:$('#delais'), backlog:$('#backlog'),
     cleNom:$('#cleNom'), cleCharge:$('#cleCharge'), cycle:$('#cycle'),
-    margeNet:$('#margeNet'), tendance:$('#tendance'), depClient:$('#depClient'), mktgEur:$('#mktgEur')
+    margeNet:$('#margeNet'), tendance:$('#tendance'), depClient:$('#depClient'), mktgEur:$('#mktgEur'),
+    mental:$('#mental')
   };
   function n(el){ var v = parseFloat((el.value||'').replace(',','.')); return isNaN(v)?null:v; }
   function has(el){ return el.value!==''; }
@@ -578,6 +588,15 @@
       if(mk===0){st='warn'; sub='<span class="delta flat">aucun budget</span> acquisition'; issues.push({sev:1,tag:'Acquisition',title:'Aucun budget consacré à trouver de nouveaux clients.',detail:'La croissance repose alors seulement sur le bouche-à-oreille. Un budget régulier, même modeste, rend le flux de prospects prévisible.'});}
       set('k-mktg', euro(mk), sub, st);
     } else set('k-mktg','—','<span class="empty">à remplir</span>');
+
+    // Charge mentale du dirigeant
+    if(has(f.mental)){
+      var mn=Math.max(1,Math.min(10,n(f.mental))), st=null, sub='';
+      if(mn>=8){st='flag'; sub='<span class="delta down">au rouge</span> risque d\'épuisement'; issues.push({sev:3,tag:'Dirigeant',title:'Votre charge mentale est au maximum ('+mn+'/10).',detail:'À ce niveau, les décisions se prennent dans l\'urgence et la fatigue. Alléger ce qui repose sur vous n\'est pas un luxe : c\'est ce qui protège l\'entreprise.'});}
+      else if(mn>=6){st='warn'; sub='<span class="delta flat">élevée</span> à surveiller'; issues.push({sev:2,tag:'Dirigeant',title:'Charge mentale élevée ('+mn+'/10).',detail:'Encore gérable, mais peu de marge. C\'est souvent le signe qu\'une partie de votre rôle gagnerait à être déléguée ou outillée.'});}
+      else{sub='<span class="delta up">sous contrôle</span>';}
+      set('k-mental', mn+' /10', sub, st);
+    } else set('k-mental','—','<span class="empty">à remplir</span>');
 
     renderAlert(issues);
     renderBilan(issues);
