@@ -75,19 +75,6 @@
   @media (prefers-color-scheme:dark){.step{color:#10131a}}
   :root[data-theme=dark] .step{color:#10131a}
 
-  /* ---- Vidéo d'aide ---- */
-  .helpvid{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px;margin:0 0 18px;box-shadow:var(--shadow)}
-  .helpvid .hv-head{display:flex;align-items:center;gap:9px;margin-bottom:10px}
-  .helpvid .hv-ico{width:30px;height:30px;flex:none;display:flex;align-items:center;justify-content:center;
-    border-radius:7px;background:var(--navy);color:#fff}
-  .helpvid .hv-ico svg{width:15px;height:15px;fill:currentColor}
-  @media (prefers-color-scheme:dark){.helpvid .hv-ico{color:#10131a}}
-  :root[data-theme=dark] .helpvid .hv-ico{color:#10131a}
-  .helpvid .hv-txt b{display:block;font-size:13.5px}
-  .helpvid .hv-txt span{font-size:11.5px;color:var(--ink-soft)}
-  .helpvid .frame{position:relative;width:100%;padding-top:56.25%;border-radius:8px;overflow:hidden;background:#000}
-  .helpvid .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-
   /* ---- Cockpit ---- */
   .preview{padding:20px 24px}
   .pv-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:14px}
@@ -173,21 +160,6 @@
   <form class="form" id="form" autocomplete="off">
     <h1>Vos chiffres clés</h1>
     <p class="lede">Répondez au feeling — 8 chiffres de pilotage, 5 sur la santé de l'entreprise et la vôtre. On affine ensuite.</p>
-
-    <div class="helpvid">
-      <div class="hv-head">
-        <span class="hv-ico"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
-        <div class="hv-txt">
-          <b>Besoin d'aide pour remplir&nbsp;?</b>
-          <span>Regardez la vidéo, on remplit le tableau de bord ensemble.</span>
-        </div>
-      </div>
-      <div class="frame">
-        <iframe src="https://www.youtube.com/embed/UHdROiCR06s" title="Comment remplir votre tableau de bord"
-          loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen></iframe>
-      </div>
-    </div>
 
     <fieldset>
       <legend>0 · Votre activité</legend>
