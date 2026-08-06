@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<!-- landing v3 -->
+<!-- landing v4 (webhook make) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Votre tableau de bord de pilotage — offert</title>
@@ -163,14 +163,12 @@
 <script>
 (function(){
   // ====================================================================
-  //  CONFIG — a remplir avant mise en ligne
+  //  CONFIG
   // ====================================================================
-  // 1) Cree une cle gratuite sur https://web3forms.com (juste ton email,
-  //    aucune inscription). Colle la cle ci-dessous. Chaque lead t'arrive
-  //    alors par email (prenom, email, telephone).
-  var WEB3FORMS_KEY = "REMPLACER_PAR_VOTRE_ACCESS_KEY";
+  // 1) Webhook Make.com qui recoit les leads (prenom, email, telephone).
+  var WEBHOOK_URL  = "https://hook.eu1.make.com/g11dcxuc0vz9lk195uk1b3py8ugoo382";
   // 2) Page vers laquelle on redirige apres l'envoi (le tableau de bord).
-  var REDIRECT_URL  = "tableau.html";
+  var REDIRECT_URL = "tableau.html";
   // ====================================================================
 
   var form = document.getElementById('leadForm');
@@ -185,45 +183,39 @@
       showMsg("Merci de cocher la case pour continuer.", 'err'); return;
     }
 
+    // Honeypot anti-spam : si rempli, on redirige sans rien envoyer.
+    if(form.botcheck.checked){ window.location.href = REDIRECT_URL; return; }
+
     btn.disabled = true;
     var original = btn.textContent;
     btn.textContent = "Envoi en cours...";
     msg.className = 'msg';
 
-    var data = {
-      access_key: WEB3FORMS_KEY,
-      subject: "Nouveau lead cockpit — " + (form.prenom.value || ''),
-      from_name: "Landing cockpit Lab0",
-      prenom: form.prenom.value,
-      email: form.email.value,
-      telephone: form.tel.value,
-      botcheck: form.botcheck.checked
-    };
+    // Envoi en x-www-form-urlencoded : pas de requete preflight CORS,
+    // Make recoit directement les champs nommes (prenom, email, telephone).
+    var params = new URLSearchParams();
+    params.append('prenom', form.prenom.value);
+    params.append('email', form.email.value);
+    params.append('telephone', form.tel.value);
+    params.append('source', 'landing-cockpit-lab0');
+    params.append('page', location.href);
 
-    // Si la cle n'est pas encore configuree : on ne bloque pas le prospect,
-    // on l'envoie quand meme vers le tableau de bord.
-    if(WEB3FORMS_KEY === "REMPLACER_PAR_VOTRE_ACCESS_KEY"){
-      window.location.href = REDIRECT_URL; return;
-    }
+    function go(){ window.location.href = REDIRECT_URL; }
 
-    fetch('https://api.web3forms.com/submit', {
+    fetch(WEBHOOK_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(data)
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+      body: params.toString(),
+      keepalive: true
     })
-    .then(function(r){ return r.json(); })
-    .then(function(res){
-      if(res.success){
-        showMsg("C'est bon ! Redirection vers votre tableau de bord...", 'ok');
-        setTimeout(function(){ window.location.href = REDIRECT_URL; }, 900);
-      } else {
-        btn.disabled = false; btn.textContent = original;
-        showMsg("Une erreur est survenue. Réessayez ou écrivez-nous.", 'err');
-      }
+    .then(function(){
+      showMsg("C'est bon ! Redirection vers votre tableau de bord...", 'ok');
+      setTimeout(go, 700);
     })
     .catch(function(){
-      btn.disabled = false; btn.textContent = original;
-      showMsg("Connexion impossible. Vérifiez votre réseau et réessayez.", 'err');
+      // La donnee part quand meme dans la plupart des cas : on ne bloque
+      // pas le prospect, on l'envoie vers le tableau de bord.
+      setTimeout(go, 700);
     });
   });
 })();
