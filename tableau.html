@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Votre cockpit en 10 minutes</title>
+<style>
+  :root{
+    --paper:#f6f4ef; --card:#fffdf9; --ink:#1c1b19; --ink-soft:#57534c;
+    --line:#e5e0d6; --line-strong:#d6cfc0; --navy:#1f3a5f; --navy-soft:#2f4d78;
+    --green:#2f6d4f; --amber:#9a6b12; --red:#a23a2e; --chip:#efeae0;
+    --shadow:0 1px 0 rgba(0,0,0,.03);
+    --mono:'SFMono-Regular',ui-monospace,'Menlo','Consolas',monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#16181c; --card:#1e2127; --ink:#e9e6df; --ink-soft:#a7a196;
+      --line:#2c3038; --line-strong:#3a3f49; --navy:#8fb3e0; --navy-soft:#a7c4ea;
+      --green:#6fbf93; --amber:#d3a24a; --red:#e0776a; --chip:#262a31;
+    }
+  }
+  :root[data-theme=light]{
+    --paper:#f6f4ef; --card:#fffdf9; --ink:#1c1b19; --ink-soft:#57534c;
+    --line:#e5e0d6; --line-strong:#d6cfc0; --navy:#1f3a5f; --navy-soft:#2f4d78;
+    --green:#2f6d4f; --amber:#9a6b12; --red:#a23a2e; --chip:#efeae0;
+  }
+  :root[data-theme=dark]{
+    --paper:#16181c; --card:#1e2127; --ink:#e9e6df; --ink-soft:#a7a196;
+    --line:#2c3038; --line-strong:#3a3f49; --navy:#8fb3e0; --navy-soft:#a7c4ea;
+    --green:#6fbf93; --amber:#d3a24a; --red:#e0776a; --chip:#262a31;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.45;
+    -webkit-font-smoothing:antialiased}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:16px 22px;border-bottom:1px solid var(--line);background:var(--card)}
+  .brand{display:flex;flex-direction:column;gap:2px}
+  .brand b{font-size:15px;letter-spacing:.2px}
+  .brand span{font-size:12px;color:var(--ink-soft)}
+  .lab0{display:inline-block;font-weight:800;font-size:10.5px;letter-spacing:.6px;vertical-align:middle;
+    padding:2px 7px;border:1px solid var(--navy);border-radius:5px;color:var(--navy);margin-left:6px}
+  a.lab0{text-decoration:none} a.lab0:hover{background:var(--navy);color:#fff}
+  @media (prefers-color-scheme:dark){a.lab0:hover{color:#10131a}}
+  :root[data-theme=dark] a.lab0:hover{color:#10131a}
+  .actions{display:flex;gap:8px}
+  button.btn{font:inherit;font-size:13px;padding:8px 13px;border:1px solid var(--line-strong);
+    background:var(--card);color:var(--ink);border-radius:7px;cursor:pointer}
+  button.btn:hover{border-color:var(--navy)}
+  button.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+  @media (prefers-color-scheme:dark){button.btn.primary{color:#10131a}}
+  :root[data-theme=dark] button.btn.primary{color:#10131a}
+
+  .wrap{display:grid;grid-template-columns:minmax(320px,420px) 1fr;gap:0;align-items:start}
+  @media (max-width:900px){.wrap{grid-template-columns:1fr}}
+
+  /* ---- Formulaire ---- */
+  .form{padding:20px 22px;border-right:1px solid var(--line);min-height:calc(100vh - 66px)}
+  @media (max-width:900px){.form{border-right:none;border-bottom:1px solid var(--line);min-height:0}}
+  .form h1{font-size:19px;margin:0 0 4px}
+  .form .lede{font-size:13px;color:var(--ink-soft);margin:0 0 18px}
+  fieldset{border:1px solid var(--line);border-radius:10px;padding:14px 14px 6px;margin:0 0 16px}
+  legend{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--navy);
+    font-weight:600;padding:0 6px}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:3px}
+  .field .hint{font-size:11.5px;color:var(--ink-soft);margin-bottom:6px}
+  .field input,.field select{width:100%;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line-strong);
+    background:var(--paper);color:var(--ink);border-radius:7px}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(31,58,95,.12)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .step{display:inline-block;min-width:20px;height:20px;line-height:20px;text-align:center;
+    font-size:11px;font-weight:700;color:#fff;background:var(--navy);border-radius:50%;margin-right:7px}
+  @media (prefers-color-scheme:dark){.step{color:#10131a}}
+  :root[data-theme=dark] .step{color:#10131a}
+
+  /* ---- Cockpit ---- */
+  .preview{padding:20px 24px}
+  .pv-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:14px}
+  .pv-head h2{margin:0;font-size:20px}
+  .pv-head .co{font-size:12px;color:var(--ink-soft)}
+  .tabs{display:flex;gap:4px;background:var(--chip);padding:4px;border-radius:9px;width:max-content}
+  .tab{font:inherit;font-size:13px;font-weight:600;padding:6px 14px;border:0;background:transparent;
+    color:var(--ink-soft);border-radius:6px;cursor:pointer}
+  .tab.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+
+  .alert{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-left:3px solid var(--ink-soft);
+    background:var(--card);border-radius:10px;padding:13px 15px;margin:14px 0 18px}
+  .alert.red{border-left-color:var(--red)}
+  .alert.amber{border-left-color:var(--amber)}
+  .alert.green{border-left-color:var(--green)}
+  .alert .tag{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+    padding:2px 7px;border-radius:5px;background:var(--chip);color:var(--ink-soft);white-space:nowrap;margin-top:2px}
+  .alert.red .tag{color:var(--red)} .alert.amber .tag{color:var(--amber)} .alert.green .tag{color:var(--green)}
+  .alert .msg b{font-size:14px} .alert .msg p{margin:3px 0 0;font-size:12.5px;color:var(--ink-soft)}
+
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px}
+  @media (max-width:1150px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:520px){.kpis{grid-template-columns:1fr}}
+  .kpi{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:13px 14px;box-shadow:var(--shadow)}
+  .kpi .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+  .kpi .label{font-size:12px;color:var(--ink-soft);font-weight:600}
+  .kpi .ico{width:15px;height:15px;color:var(--ink-soft);flex:none}
+  .kpi .ico svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6}
+  .kpi .val{font-size:26px;font-weight:600;letter-spacing:-.5px;line-height:1}
+  .kpi .sub{margin-top:8px;font-size:12px;color:var(--ink-soft)}
+  .chip{display:inline-block;font-size:11px;padding:1px 7px;border-radius:20px;background:var(--chip);
+    color:var(--ink-soft);margin-right:5px}
+  .delta{font-weight:600;margin-right:5px}
+  .delta.up{color:var(--green)} .delta.down{color:var(--red)} .delta.flat{color:var(--amber)}
+  .kpi.flag{border-color:var(--red)} .kpi.warn{border-color:var(--amber)}
+  .empty{color:var(--ink-soft);font-size:13px;font-style:italic}
+  .view{display:none} .view.on{display:block}
+  .foot{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-soft)}
+
+  /* ---- Bilan ---- */
+  .bilan{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:16px 18px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .bilan h3{margin:0 0 6px;font-size:16px}
+  .bilan p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.5}
+  .bilan ul{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+  .bilan li{font-size:13px;display:flex;gap:9px;align-items:flex-start}
+  .bilan li .dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:5px;background:var(--ink-soft)}
+  .bilan li.red .dot{background:var(--red)} .bilan li.amber .dot{background:var(--amber)}
+  .bilan li b{color:var(--ink)}
+  .cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;
+    border:1px solid var(--navy);background:var(--card);border-radius:12px;padding:16px 18px}
+  .cta .txt b{display:block;font-size:15px;margin-bottom:2px}
+  .cta .txt span{font-size:12.5px;color:var(--ink-soft)}
+  .cta a.book{font:inherit;font-size:14px;font-weight:600;padding:11px 18px;background:var(--navy);color:#fff;
+    border-radius:9px;text-decoration:none;white-space:nowrap}
+  .cta a.book:hover{background:var(--navy-soft)}
+  @media (prefers-color-scheme:dark){.cta a.book{color:#10131a}}
+  :root[data-theme=dark] .cta a.book{color:#10131a}
+
+  @media print{
+    .topbar .actions,.form{display:none}
+    .wrap{grid-template-columns:1fr}
+    body{background:#fff}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <b>Cockpit de pilotage — atelier 10 minutes <a class="lab0" id="lab0" href="https://lelab0.com" target="_blank" rel="noopener">Lab0</a></b>
+    <span>Choisissez votre secteur, remplissez les cases. Le tableau de bord se construit à droite.</span>
+  </div>
+  <div class="actions">
+    <button class="btn" id="theme">Thème</button>
+    <button class="btn" id="reset">Réinitialiser</button>
+    <button class="btn primary" id="print">Imprimer / PDF</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- FORMULAIRE -->
+  <form class="form" id="form" autocomplete="off">
+    <h1>Vos chiffres clés</h1>
+    <p class="lede">Répondez au feeling — 8 chiffres de pilotage, 5 sur la santé de l'entreprise et la vôtre. On affine ensuite.</p>
+
+    <fieldset>
+      <legend>0 · Votre activité</legend>
+      <div class="field">
+        <label for="secteur">Secteur d'activité</label>
+        <div class="hint">Adapte le vocabulaire et les repères du cockpit à votre métier.</div>
+        <select id="secteur">
+          <option value="generique">Générique / autre</option>
+          <option value="btp">Artisanat, BTP &amp; travaux</option>
+          <option value="services">Services &amp; conseil (B2B)</option>
+          <option value="commerce">Commerce &amp; boutique</option>
+          <option value="restauration">Restauration &amp; CHR</option>
+          <option value="ecommerce">E-commerce</option>
+          <option value="sante">Santé &amp; professions libérales</option>
+          <option value="industrie">Industrie &amp; production</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="co">Nom de votre entreprise</label>
+        <input id="co" type="text" placeholder="Ex. Entreprise Martin">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>1 · L'argent</legend>
+      <div class="field">
+        <label><span class="step">1</span>Chiffre d'affaires du mois en cours (€)</label>
+        <div class="hint">Une estimation suffit.</div>
+        <input id="ca" type="number" inputmode="numeric" min="0" placeholder="Ex. 48000">
+      </div>
+      <div class="field">
+        <label><span class="step">2</span>Trésorerie disponible — en jours de charge</label>
+        <div class="hint">« Si tout s'arrête demain, je tiens combien de jours ? »</div>
+        <input id="treso" type="number" inputmode="numeric" min="0" placeholder="Ex. 45">
+      </div>
+      <div class="field">
+        <label><span class="step">3</span><span id="q3label">Ventes en attente de décision</span></label>
+        <div class="hint" id="q3hint">Montant total et nombre.</div>
+        <div class="two">
+          <input id="devisEur" type="number" inputmode="numeric" min="0" placeholder="€ ex. 31200">
+          <input id="devisNb" type="number" inputmode="numeric" min="0" placeholder="Nb ex. 7">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>2 · La production</legend>
+      <div class="field">
+        <label><span class="step">4</span><span id="q4label">Dossiers en cours (en même temps)</span></label>
+        <input id="wip" type="number" inputmode="numeric" min="0" placeholder="Ex. 6">
+      </div>
+      <div class="field">
+        <label><span class="step">5</span><span id="q5label">Sur vos 5 derniers, combien sans accroc ?</span></label>
+        <div class="hint" id="q5hint">Livrés à temps et sans problème. De 0 à 5.</div>
+        <input id="delais" type="number" inputmode="numeric" min="0" max="5" placeholder="Ex. 4">
+      </div>
+      <div class="field">
+        <label><span class="step">6</span><span id="q6label">Demandes en attente de traitement</span></label>
+        <input id="backlog" type="number" inputmode="numeric" min="0" placeholder="Ex. 9">
+      </div>
+      <div class="field">
+        <label><span class="step">7</span><span id="q8label">Temps moyen entre commande et livraison</span></label>
+        <div class="hint" id="q8hint">En jours.</div>
+        <input id="cycle" type="number" inputmode="numeric" min="0" placeholder="Ex. 15">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>3 · L'équipe &amp; le goulot</legend>
+      <div class="field">
+        <label><span class="step">8</span>Votre équipe salariée</label>
+        <div class="hint">Nombre de salariés (hors vous) et leur salaire brut mensuel moyen.</div>
+        <div class="two">
+          <input id="nbSal" type="number" inputmode="numeric" min="0" placeholder="Nb ex. 3">
+          <input id="salaireBrut" type="number" inputmode="numeric" min="0" placeholder="€ brut ex. 2500">
+        </div>
+      </div>
+      <div class="field">
+        <label><span class="step">9</span><span id="q9label">Dossiers en retard sur la date promise</span></label>
+        <div class="hint">Parmi vos dossiers en cours, combien ont déjà dépassé la date prévue.</div>
+        <input id="retard" type="number" inputmode="numeric" min="0" placeholder="Ex. 2">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>4 · La santé de l'entreprise</legend>
+      <div class="field">
+        <label><span class="step">10</span>Ce qu'il vous reste sur 100 € encaissés (€)</label>
+        <div class="hint">Votre marge nette, au feeling. « Après tout payé, il me reste combien sur 100 € ? »</div>
+        <input id="margeNet" type="number" inputmode="numeric" min="0" max="100" placeholder="Ex. 12">
+      </div>
+      <div class="field">
+        <label><span class="step">11</span>Évolution du CA sur 12 mois (%)</label>
+        <div class="hint">Peut être négatif. Ex. +8 pour une hausse, -5 pour une baisse.</div>
+        <input id="tendance" type="number" inputmode="numeric" placeholder="Ex. 8">
+      </div>
+      <div class="field">
+        <label><span class="step">12</span>Part du CA avec votre plus gros client (%)</label>
+        <div class="hint">Mesure votre dépendance commerciale.</div>
+        <input id="depClient" type="number" inputmode="numeric" min="0" max="100" placeholder="Ex. 25">
+      </div>
+      <div class="field">
+        <label><span class="step">13</span>Budget mensuel pub / contenu / communication (€)</label>
+        <div class="hint">Ce que vous investissez chaque mois pour attirer de nouveaux clients.</div>
+        <input id="mktgEur" type="number" inputmode="numeric" min="0" placeholder="Ex. 1500">
+      </div>
+      <div class="field">
+        <label><span class="step">14</span>Votre niveau de charge mentale, aujourd'hui</label>
+        <div class="hint">De 1 (tout est sous contrôle) à 10 (vous êtes submergé·e).</div>
+        <input id="mental" type="number" inputmode="numeric" min="1" max="10" placeholder="Ex. 7">
+      </div>
+    </fieldset>
+  </form>
+
+  <!-- COCKPIT -->
+  <section class="preview">
+    <div class="pv-head">
+      <div>
+        <h2 id="pvTitle">Votre cockpit</h2>
+        <div class="co" id="pvCo">En attente de vos chiffres…</div>
+      </div>
+      <div class="tabs">
+        <button class="tab on" data-v="argent" type="button">Argent</button>
+        <button class="tab" data-v="ope" type="button">Opérationnel</button>
+        <button class="tab" data-v="sante" type="button">Santé</button>
+        <button class="tab" data-v="bilan" type="button">Bilan</button>
+      </div>
+    </div>
+
+    <div id="alert" class="alert"><span class="tag">Diagnostic</span>
+      <div class="msg"><b>Remplissez vos chiffres pour voir votre point d'attention n°1.</b>
+      <p>Le cockpit surligne automatiquement la case la plus critique.</p></div></div>
+
+    <!-- Vue Argent -->
+    <div class="view on" id="v-argent">
+      <div class="kpis">
+        <div class="kpi" id="k-ca">
+          <div class="top"><span class="label">CA du mois</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v18M8 7h5.5a2.5 2.5 0 0 1 0 5H10a2.5 2.5 0 0 0 0 5H16"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-treso">
+          <div class="top"><span class="label">Trésorerie</span><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-devis">
+          <div class="top"><span class="label" id="lbl-devis">Ventes en attente</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h4"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-masse">
+          <div class="top"><span class="label">Masse salariale</span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 5.5a3 3 0 0 1 0 5.8M15 14.7a5.5 5.5 0 0 1 3.5 5.3"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vue Opérationnel -->
+    <div class="view" id="v-ope">
+      <div class="kpis">
+        <div class="kpi" id="k-wip">
+          <div class="top"><span class="label" id="lbl-wip">En-cours</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 20l6-6M14 6l2-2 4 4-2 2M14 6l4 4-8 8H6v-4z"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-delais">
+          <div class="top"><span class="label" id="lbl-delais">Qualité de service</span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-backlog">
+          <div class="top"><span class="label" id="lbl-backlog">File d'attente</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-retard">
+          <div class="top"><span class="label" id="lbl-retard">Dossiers en retard</span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 1.5M9 2h6"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-cycle">
+          <div class="top"><span class="label" id="lbl-cycle">Temps de traitement</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M8 3h8M9 3v3a3 3 0 0 0 6 0V3M9 21v-3a3 3 0 0 1 6 0v3M8 21h8"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vue Santé -->
+    <div class="view" id="v-sante">
+      <div class="kpis">
+        <div class="kpi" id="k-marge">
+          <div class="top"><span class="label">Marge nette</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 15l5-5 4 3 6-7"/><path d="M15 6h5v5"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-tend">
+          <div class="top"><span class="label">Tendance CA · 12 mois</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-dep">
+          <div class="top"><span class="label">Dépendance · gros client</span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12V3a9 9 0 0 1 7.8 4.5z"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-mktg">
+          <div class="top"><span class="label">Budget acquisition / mois</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 11l18-7-7 18-3-8z"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+        <div class="kpi" id="k-mental">
+          <div class="top"><span class="label">Charge mentale · vous</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 4a5 5 0 0 0-5 5c0 1.6.8 2.6 1.6 3.4.4.4.4 1 .4 1.6v1a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-1c0-.6 0-1.2.4-1.6C16.2 11.6 17 10.6 17 9a5 5 0 0 0-5-5z"/><path d="M9.5 21h5"/></svg></span></div>
+          <div class="val num" data-val>—</div><div class="sub" data-sub></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vue Bilan -->
+    <div class="view" id="v-bilan">
+      <div class="bilan" id="bilanBody"></div>
+      <div class="cta">
+        <div class="txt">
+          <b>On en parle 15 minutes ?</b>
+          <span>Un échange court avec Julien pour prioriser vos actions — sans engagement.</span>
+        </div>
+        <a class="book" href="https://calendar.app.google/VSPtFwQLM9pYauXv9" target="_blank" rel="noopener">Réserver un créneau →</a>
+      </div>
+    </div>
+
+    <div class="foot" id="foot">Données saisies sur votre appareil uniquement — rien n'est envoyé.</div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var $ = function(s,c){return (c||document).querySelector(s);};
+
+  /* ---------- Profils sectoriels ---------- */
+  var BASE = {
+    unit:'dossier', unitPl:'dossiers',
+    q3label:'Ventes en attente de décision', q3hint:'Montant total et nombre.',
+    q4label:'Dossiers en cours (en même temps)',
+    q5label:'Sur vos 5 derniers dossiers, combien sans accroc ?',
+    q5hint:'Livrés à temps et sans problème. De 0 à 5.',
+    q6label:'Demandes en attente de traitement',
+    q8label:'Temps moyen entre commande et livraison', q8hint:'En jours.',
+    cDevis:'Ventes en attente', cWip:'En-cours (dossiers)', cDelais:'Qualité de service',
+    cBacklog:'File d\'attente', cCycle:'Temps de traitement',
+    tTreso:60, tDelais:90, tCycle:15, wipHigh:8, tMarge:8, tMasse:30
+  };
+  function P(o){ var r={}; for(var k in BASE) r[k]=BASE[k]; for(var j in o) r[j]=o[j]; return r; }
+  var PROFILES = {
+    generique: P({}),
+    btp: P({ unit:'chantier', unitPl:'chantiers',
+      q3label:'Devis en attente de réponse', q3hint:'Montant total et nombre de devis.',
+      q4label:'Chantiers en cours (en même temps)',
+      q5label:'Sur vos 5 derniers chantiers, combien livrés dans les délais ?',
+      q5hint:'Livrés à la date promise. De 0 à 5.',
+      q6label:'Chantiers en attente de démarrage',
+      q8label:'Temps moyen entre devis signé et livraison',
+      cDevis:'Devis en attente', cWip:'En-cours (chantiers)', cDelais:'Respect des délais',
+      cBacklog:'File d\'attente', cCycle:'Temps de traitement', tTreso:60, tDelais:90, tCycle:14, wipHigh:8 }),
+    services: P({ unit:'mission', unitPl:'missions',
+      q3label:'Propositions commerciales en attente', q3hint:'Montant total et nombre.',
+      q4label:'Missions / clients en cours',
+      q5label:'Sur vos 5 dernières missions, combien livrées dans les délais ?',
+      q6label:'Missions en attente de démarrage',
+      q8label:'Temps moyen entre signature et livrable',
+      cDevis:'Propositions en attente', cWip:'En-cours (missions)', cDelais:'Respect des délais',
+      cBacklog:'File d\'attente', cCycle:'Délai de livraison', tTreso:45, tDelais:90, tCycle:21, wipHigh:8, tMarge:15, tMasse:50 }),
+    commerce: P({ unit:'commande', unitPl:'commandes',
+      q3label:'Commandes clients à honorer', q3hint:'Montant et nombre en attente.',
+      q4label:'Commandes / dossiers en cours',
+      q5label:'Sur vos 5 derniers clients, combien servis sans accroc ?',
+      q6label:'Réassorts / commandes fournisseurs en attente',
+      q8label:'Délai moyen de réassort / mise à disposition',
+      cDevis:'Commandes à honorer', cWip:'En-cours', cDelais:'Clients servis OK',
+      cBacklog:'Réassorts en attente', cCycle:'Délai de mise à dispo', tTreso:60, tDelais:95, tCycle:7, wipHigh:12, tMarge:5, tMasse:18 }),
+    restauration: P({ unit:'service', unitPl:'services',
+      q3label:'Réservations & événements à venir', q3hint:'Montant estimé et nombre.',
+      q4label:'Événements / traiteur en préparation',
+      q5label:'Sur vos 5 derniers services, combien sans accroc ?',
+      q6label:'Demandes de résa / devis en attente',
+      q8label:'Délai moyen de réponse à une demande', q8hint:'En jours.',
+      cDevis:'Résas & événements', cWip:'En préparation', cDelais:'Services sans accroc',
+      cBacklog:'Demandes en attente', cCycle:'Délai de réponse', tTreso:45, tDelais:95, tCycle:2, wipHigh:6, tMarge:6, tMasse:35 }),
+    ecommerce: P({ unit:'commande', unitPl:'commandes',
+      q3label:'Paniers / commandes à traiter', q3hint:'Montant et nombre.',
+      q4label:'Commandes en cours de préparation',
+      q5label:'Sur vos 5 dernières commandes, combien expédiées à temps ?',
+      q6label:'Commandes en attente / SAV en cours',
+      q8label:'Délai moyen commande → expédition',
+      cDevis:'À traiter', cWip:'En préparation', cDelais:'Expédiées à temps',
+      cBacklog:'En attente / SAV', cCycle:'Délai d\'expédition', tTreso:45, tDelais:98, tCycle:3, wipHigh:40, tMasse:20 }),
+    sante: P({ unit:'dossier', unitPl:'dossiers',
+      q3label:'Devis / RDV en attente de confirmation', q3hint:'Montant et nombre.',
+      q4label:'Dossiers patients / clients en cours',
+      q5label:'Sur vos 5 derniers dossiers, combien traités dans les délais ?',
+      q6label:'Liste d\'attente / RDV à planifier',
+      q8label:'Délai moyen de prise en charge',
+      cDevis:'RDV / devis en attente', cWip:'Dossiers en cours', cDelais:'Traités à temps',
+      cBacklog:'Liste d\'attente', cCycle:'Délai de prise en charge', tTreso:60, tDelais:95, tCycle:7, wipHigh:15, tMarge:15, tMasse:45 }),
+    industrie: P({ unit:'commande', unitPl:'commandes',
+      q3label:'Commandes / devis en attente', q3hint:'Montant et nombre.',
+      q4label:'Ordres de fabrication en cours',
+      q5label:'Sur vos 5 dernières commandes, combien livrées à temps ?',
+      q6label:'Carnet de commandes en attente',
+      q8label:'Délai moyen commande → expédition',
+      cDevis:'Commandes en attente', cWip:'OF en cours', cDelais:'Livrées à temps',
+      cBacklog:'Carnet de commandes', cCycle:'Délai de production', tTreso:60, tDelais:95, tCycle:20, wipHigh:15, tMarge:7, tMasse:28 })
+  };
+  var p = PROFILES.generique;
+
+  var f = {
+    co:$('#co'), ca:$('#ca'), treso:$('#treso'), devisEur:$('#devisEur'), devisNb:$('#devisNb'),
+    wip:$('#wip'), delais:$('#delais'), backlog:$('#backlog'), cycle:$('#cycle'),
+    nbSal:$('#nbSal'), salaireBrut:$('#salaireBrut'), retard:$('#retard'),
+    margeNet:$('#margeNet'), tendance:$('#tendance'), depClient:$('#depClient'), mktgEur:$('#mktgEur'),
+    mental:$('#mental')
+  };
+  function n(el){ var v = parseFloat((el.value||'').replace(',','.')); return isNaN(v)?null:v; }
+  function has(el){ return el.value!==''; }
+  function euro(v){ return Math.round(v).toLocaleString('fr-FR')+' €'; }
+  function set(id,val,sub,state){
+    var c=$('#'+id); c.classList.remove('flag','warn');
+    if(state) c.classList.add(state);
+    $('[data-val]',c).innerHTML = val;
+    $('[data-sub]',c).innerHTML = sub||'';
+  }
+
+  function applyProfile(){
+    $('#q3label').textContent = p.q3label; $('#q3hint').textContent = p.q3hint;
+    $('#q4label').textContent = p.q4label;
+    $('#q5label').textContent = p.q5label; $('#q5hint').textContent = p.q5hint;
+    $('#q6label').textContent = p.q6label;
+    $('#q8label').textContent = p.q8label; $('#q8hint').textContent = p.q8hint;
+    $('#lbl-devis').textContent = p.cDevis; $('#lbl-wip').textContent = p.cWip;
+    $('#lbl-delais').textContent = p.cDelais; $('#lbl-backlog').textContent = p.cBacklog;
+    $('#lbl-cycle').textContent = p.cCycle;
+    var uCap = p.unitPl.charAt(0).toUpperCase()+p.unitPl.slice(1);
+    $('#lbl-retard').textContent = uCap+' en retard';
+    $('#q9label').textContent = uCap+' en retard sur la date promise';
+    $('#foot').innerHTML = 'Données saisies sur votre appareil uniquement — rien n\'est envoyé. Repères '+
+      '(secteur)&nbsp;: trésorerie '+p.tTreso+'&nbsp;j · qualité '+p.tDelais+'&nbsp;% · délai '+p.tCycle+'&nbsp;j · marge '+p.tMarge+'&nbsp;% · salaires '+p.tMasse+'&nbsp;%.';
+  }
+
+  function render(){
+    var co = (f.co.value||'').trim();
+    $('#pvTitle').textContent = co ? 'Cockpit — '+co : 'Votre cockpit';
+    $('#pvCo').textContent = co ? 'Vue synthétique · mis à jour en direct' : 'En attente de vos chiffres…';
+
+    var issues=[];
+
+    // CA
+    if(has(f.ca)){ set('k-ca', euro(n(f.ca)), 'mois en cours'); }
+    else set('k-ca','—','<span class="empty">à remplir</span>');
+
+    // Trésorerie
+    if(has(f.treso)){
+      var t=n(f.treso), st=null, d='', gap=t-p.tTreso;
+      if(t<30){st='flag'; d='<span class="delta down">critique</span> sous 30 j'; issues.push({sev:3,tag:'Trésorerie',title:'Vous pilotez à moins de 30 jours de trésorerie.',detail:'C\'est le premier poste à sécuriser : une facture en retard et tout se bloque. On regarde vos encours et vos relances en priorité.'});}
+      else if(t<p.tTreso){st='warn'; d='<span class="delta flat">▼ '+Math.abs(gap)+' j</span> cible '+p.tTreso+' j'; issues.push({sev:1,tag:'Trésorerie',title:'Trésorerie sous la cible de sécurité ('+p.tTreso+' j).',detail:'Confortable à court terme, mais peu de marge en cas de coup dur.'});}
+      else{d='<span class="delta up">▲ '+gap+' j</span> au-dessus de la cible';}
+      set('k-treso', t+' j', d, st);
+    } else set('k-treso','—','<span class="empty">à remplir</span>');
+
+    // Ventes / devis en attente
+    if(has(f.devisEur)||has(f.devisNb)){
+      var eur=has(f.devisEur)?euro(n(f.devisEur)):'—';
+      var nb=has(f.devisNb)?n(f.devisNb):null;
+      var sub=(nb!==null?'<span class="chip">'+nb+'</span>':'')+'à relancer';
+      set('k-devis', eur, sub);
+      if(nb!==null && nb>=5) issues.push({sev:2,tag:'Commercial',title:nb+' '+p.cDevis.toLowerCase()+' sans réponse.',detail:'Autant de CA potentiel qui ne se transforme pas. Une simple relance systématique récupère souvent 20–30 %.'});
+    } else set('k-devis','—','<span class="empty">à remplir</span>');
+
+    // WIP
+    if(has(f.wip)){
+      var w=n(f.wip), st=null, d=p.unitPl+' menés en parallèle';
+      if(w>=p.wipHigh){st='warn'; d='<span class="delta flat">élevé</span> risque de dispersion'; issues.push({sev:2,tag:'Production',title:w+' '+p.unitPl+' ouverts en même temps.',detail:'Trop d\'en-cours = tout avance lentement et rien ne se termine. Limiter le nombre de fronts ouverts accélère les livraisons.'});}
+      set('k-wip', w, d, st);
+    } else set('k-wip','—','<span class="empty">à remplir</span>');
+
+    // Qualité / respect délais
+    if(has(f.delais)){
+      var d5=Math.max(0,Math.min(5,n(f.delais))), pct=Math.round(d5/5*100), st=null, sub='', gap=pct-p.tDelais;
+      if(pct<80){st='flag'; sub='<span class="delta down">'+gap+' pts</span> cible '+p.tDelais+' %'; issues.push({sev:3,tag:'Qualité',title:'Moins de 8 '+p.unitPl+' sur 10 sans accroc.',detail:'Chaque problème use la relation client et déclenche des urgences qui coûtent cher. C\'est souvent le symptôme d\'un goulot en amont.'});}
+      else if(pct<p.tDelais){st='warn'; sub='<span class="delta flat">'+gap+' pts</span> cible '+p.tDelais+' %'; issues.push({sev:1,tag:'Qualité',title:'Qualité de service un peu sous la cible.',detail:'Proche du bon niveau — un ou deux '+p.unitPl+' à fiabiliser.'});}
+      else{sub='<span class="delta up">objectif tenu</span>';}
+      set('k-delais', pct+' %', sub+' · '+d5+'/5', st);
+    } else set('k-delais','—','<span class="empty">à remplir</span>');
+
+    // Backlog
+    if(has(f.backlog)){
+      var b=n(f.backlog), st=null, sub='en attente', w2=has(f.wip)?n(f.wip):null;
+      if(w2 && b>2*w2){st='warn'; sub='<span class="chip">≈ '+Math.round(b/w2)+'× l\'en-cours</span> ça s\'accumule'; issues.push({sev:1,tag:'Charge',title:'La file d\'attente gonfle plus vite que vous ne livrez.',detail:'Les délais annoncés vont s\'allonger. Question clé : embaucher, sous-traiter, ou trier les demandes ?'});}
+      set('k-backlog', b, sub, st);
+    } else set('k-backlog','—','<span class="empty">à remplir</span>');
+
+    // Masse salariale
+    if(has(f.nbSal) && has(f.salaireBrut)){
+      var coutCharge=n(f.nbSal)*n(f.salaireBrut)*1.42, st=null, caM=has(f.ca)?n(f.ca):null;
+      if(caM && caM>0){
+        var poids=coutCharge/caM*100, pr=Math.round(poids), sub='≈ '+euro(coutCharge)+' chargés/mois';
+        if(poids>p.tMasse*1.2){st='flag'; sub='<span class="delta down">lourd</span> vs '+p.tMasse+' % · '+sub; issues.push({sev:3,tag:'Masse salariale',title:'Les salaires pèsent '+pr+' % de votre chiffre d\'affaires.',detail:'Au-dessus du repère de votre secteur ('+p.tMasse+' %). Une baisse d\'activité passagère et la paie devient dure à sortir : c\'est un sujet de structure à regarder de près.'});}
+        else if(poids>p.tMasse){st='warn'; sub='<span class="delta flat">élevé</span> vs '+p.tMasse+' % · '+sub; issues.push({sev:2,tag:'Masse salariale',title:'Masse salariale au-dessus du repère ('+pr+' % vs '+p.tMasse+' %).',detail:'Encore tenable, mais peu de marge. Chaque poste doit être couvert par du chiffre d\'affaires régulier.'});}
+        else{sub='<span class="delta up">saine</span> vs '+p.tMasse+' % · '+sub;}
+        set('k-masse', pr+' % du CA', sub, st);
+      } else set('k-masse', euro(coutCharge), 'coût chargé/mois · ajoutez le CA pour le poids');
+    } else set('k-masse','—','<span class="empty">à remplir</span>');
+
+    // Cycle
+    if(has(f.cycle)){
+      var c=n(f.cycle), st=null, sub='', gap=c-p.tCycle;
+      if(c>p.tCycle*1.25){st='warn'; sub='<span class="delta down">▲ '+gap+' j</span> cible '+p.tCycle+' j'; issues.push({sev:1,tag:'Délai',title:'Le délai de traitement dépasse la cible.',detail:'Plus le cycle est long, plus la trésorerie est immobilisée et plus les clients patientent.'});}
+      else if(c>p.tCycle){sub='<span class="delta flat">▲ '+gap+' j</span> cible '+p.tCycle+' j';}
+      else{sub='<span class="delta up">dans la cible</span>';}
+      set('k-cycle', c+' j', sub, st);
+    } else set('k-cycle','—','<span class="empty">à remplir</span>');
+
+    // Dossiers en retard
+    if(has(f.retard)){
+      var rt=n(f.retard), st=null, sub=p.unitPl+' au-delà de la date promise', w3=has(f.wip)?n(f.wip):null;
+      if(w3 && w3>0){
+        var pctR=Math.round(rt/w3*100);
+        sub='<span class="chip">'+pctR+' % de l\'en-cours</span> en retard';
+        if(pctR>=40){st='flag'; issues.push({sev:3,tag:'Goulot',title:'Près de la moitié des '+p.unitPl+' sont en retard ('+pctR+' %).',detail:'Ce n\'est plus un incident, c\'est un goulot installé. Il faut repérer l\'étape précise qui bloque et y ajouter de la capacité, sinon les délais promis vont continuer de glisser.'});}
+        else if(pctR>=20){st='warn'; issues.push({sev:2,tag:'Goulot',title:rt+' '+p.unitPl+' en retard sur '+w3+' en cours.',detail:'Le goulot commence à se voir. Traiter ces retards en priorité évite l\'effet boule de neige sur toute la file.'});}
+      } else if(rt>0){st='warn'; issues.push({sev:2,tag:'Goulot',title:rt+' '+p.unitPl+' en retard.',detail:'Autant de clients qui attendent au-delà de la date promise — le premier signe d\'un goulot.'});}
+      set('k-retard', rt, sub, st);
+    } else set('k-retard','—','<span class="empty">à remplir</span>');
+
+    // Marge nette
+    if(has(f.margeNet)){
+      var m=n(f.margeNet), st=null, sub='', gap=m-p.tMarge;
+      if(m<p.tMarge/2){st='flag'; sub='<span class="delta down">'+gap+' pts</span> repère '+p.tMarge+' %'; issues.push({sev:3,tag:'Rentabilité',title:'Marge nette très faible ('+m+' %).',detail:'À ce niveau, le moindre imprévu efface le bénéfice. Il faut regarder les prix, les coûts fixes et les postes qui grignotent la marge.'});}
+      else if(m<p.tMarge){st='warn'; sub='<span class="delta flat">'+gap+' pts</span> repère '+p.tMarge+' %'; issues.push({sev:2,tag:'Rentabilité',title:'Marge nette sous le repère du secteur ('+p.tMarge+' %).',detail:'Vous travaillez, mais l\'entreprise garde peu. Un léger ajustement de prix ou de coûts change tout à cette échelle.'});}
+      else{sub='<span class="delta up">▲ '+gap+' pts</span> au-dessus du repère';}
+      set('k-marge', m+' %', sub, st);
+    } else set('k-marge','—','<span class="empty">à remplir</span>');
+
+    // Tendance CA 12 mois
+    if(has(f.tendance)){
+      var g=n(f.tendance), st=null, sub='';
+      if(g<=-10){st='flag'; sub='<span class="delta down">▼ '+g+' %</span> sur 12 mois'; issues.push({sev:3,tag:'Croissance',title:'Le chiffre d\'affaires recule nettement ('+g+' % sur 12 mois).',detail:'Une baisse installée attaque la trésorerie et le moral. Prioriser la reconquête clients et le commercial avant tout le reste.'});}
+      else if(g<0){st='warn'; sub='<span class="delta flat">▼ '+g+' %</span> sur 12 mois'; issues.push({sev:1,tag:'Croissance',title:'Chiffre d\'affaires en léger recul ('+g+' %).',detail:'À surveiller : un trimestre encore en baisse et la tendance se confirme.'});}
+      else{sub='<span class="delta up">▲ '+g+' %</span> sur 12 mois';}
+      set('k-tend', (g>0?'+':'')+g+' %', sub, st);
+    } else set('k-tend','—','<span class="empty">à remplir</span>');
+
+    // Dépendance gros client
+    if(has(f.depClient)){
+      var dc=n(f.depClient), st=null, sub='';
+      if(dc>=40){st='flag'; sub='<span class="delta down">risque élevé</span> concentration'; issues.push({sev:3,tag:'Dépendance',title:dc+' % du CA repose sur un seul client.',detail:'Si ce client part ou renégocie, l\'entreprise vacille. Diversifier le portefeuille clients est une priorité stratégique.'});}
+      else if(dc>=25){st='warn'; sub='<span class="delta flat">à surveiller</span> concentration'; issues.push({sev:2,tag:'Dépendance',title:'Un client pèse '+dc+' % de votre activité.',detail:'Confortable aujourd\'hui, fragile demain. Développer 2–3 comptes en parallèle réduit le risque.'});}
+      else{sub='<span class="delta up">portefeuille réparti</span>';}
+      set('k-dep', dc+' %', sub, st);
+    } else set('k-dep','—','<span class="empty">à remplir</span>');
+
+    // Budget acquisition / mois
+    if(has(f.mktgEur)){
+      var mk=n(f.mktgEur), st=null, sub='pub · contenu · communication', ca=has(f.ca)?n(f.ca):null;
+      if(ca && ca>0){ sub='<span class="chip">'+Math.round(mk/ca*100)+' % du CA</span> acquisition'; }
+      if(mk===0){st='warn'; sub='<span class="delta flat">aucun budget</span> acquisition'; issues.push({sev:1,tag:'Acquisition',title:'Aucun budget consacré à trouver de nouveaux clients.',detail:'La croissance repose alors seulement sur le bouche-à-oreille. Un budget régulier, même modeste, rend le flux de prospects prévisible.'});}
+      set('k-mktg', euro(mk), sub, st);
+    } else set('k-mktg','—','<span class="empty">à remplir</span>');
+
+    // Charge mentale du dirigeant
+    if(has(f.mental)){
+      var mn=Math.max(1,Math.min(10,n(f.mental))), st=null, sub='';
+      if(mn>=8){st='flag'; sub='<span class="delta down">au rouge</span> risque d\'épuisement'; issues.push({sev:3,tag:'Dirigeant',title:'Votre charge mentale est au maximum ('+mn+'/10).',detail:'À ce niveau, les décisions se prennent dans l\'urgence et la fatigue. Alléger ce qui repose sur vous n\'est pas un luxe : c\'est ce qui protège l\'entreprise.'});}
+      else if(mn>=6){st='warn'; sub='<span class="delta flat">élevée</span> à surveiller'; issues.push({sev:2,tag:'Dirigeant',title:'Charge mentale élevée ('+mn+'/10).',detail:'Encore gérable, mais peu de marge. C\'est souvent le signe qu\'une partie de votre rôle gagnerait à être déléguée ou outillée.'});}
+      else{sub='<span class="delta up">sous contrôle</span>';}
+      set('k-mental', mn+' /10', sub, st);
+    } else set('k-mental','—','<span class="empty">à remplir</span>');
+
+    renderAlert(issues);
+    renderBilan(issues);
+  }
+
+  function renderBilan(issues){
+    var el=$('#bilanBody');
+    var co=(f.co.value||'').trim(), nom=co||'votre entreprise';
+    var filled = Object.keys(f).some(function(k){return has(f[k]);});
+    if(!filled){
+      el.innerHTML='<h3>Votre bilan express</h3><p>Remplissez vos chiffres à gauche : cet espace résume en clair la situation de '+nom+' et les points à traiter en priorité — puis vous pouvez réserver 15 minutes pour en parler.</p>';
+      return;
+    }
+    issues.sort(function(x,y){return y.sev-x.sev;});
+    var reds=issues.filter(function(i){return i.sev>=3;}).length;
+    var intro;
+    if(!issues.length){
+      intro='Sur les chiffres saisis, aucun signal rouge : '+nom+' est bien tenue. Le vrai sujet devient la croissance — comment passer à l\'étape suivante sans casser ce qui marche.';
+    } else if(reds){
+      intro=reds+' point'+(reds>1?'s':'')+' critique'+(reds>1?'s':'')+' ressort'+(reds>1?'ent':'')+' pour '+nom+', et '+issues.length+' au total à traiter. Ce sont des sujets à prendre vite, avant qu\'ils ne pèsent sur la trésorerie ou l\'équipe.';
+    } else {
+      intro=nom+' tient la route, avec '+issues.length+' point'+(issues.length>1?'s':'')+' à surveiller pour ne pas laisser la situation se dégrader.';
+    }
+    var lis=issues.map(function(i){
+      var cls=i.sev>=3?'red':'amber';
+      return '<li class="'+cls+'"><span class="dot"></span><span><b>'+i.tag+'</b> — '+i.title+'</span></li>';
+    }).join('');
+    el.innerHTML='<h3>Le bilan de '+nom+'</h3><p>'+intro+'</p>'+(lis?'<ul>'+lis+'</ul>':'');
+  }
+
+  function renderAlert(issues){
+    var a=$('#alert');
+    var filled = Object.keys(f).some(function(k){return has(f[k]);});
+    if(!filled){
+      a.className='alert';
+      a.innerHTML='<span class="tag">Diagnostic</span><div class="msg"><b>Remplissez vos chiffres pour voir votre point d\'attention n°1.</b><p>Le cockpit surligne automatiquement la case la plus critique.</p></div>';
+      return;
+    }
+    if(!issues.length){
+      a.className='alert green';
+      a.innerHTML='<span class="tag">Sous contrôle</span><div class="msg"><b>Aucun signal rouge sur vos chiffres actuels.</b><p>Beau pilotage. On peut passer du « éteindre les feux » au « faire grandir ».</p></div>';
+      return;
+    }
+    issues.sort(function(x,y){return y.sev-x.sev;});
+    var top=issues[0];
+    var cls = top.sev>=3?'red':'amber';
+    var more = issues.length>1 ? '<p>+ '+(issues.length-1)+' autre'+(issues.length>2?'s':'')+' point'+(issues.length>2?'s':'')+' à surveiller.</p>' : '';
+    a.className='alert '+cls;
+    a.innerHTML='<span class="tag">Point n°1 · '+top.tag+'</span><div class="msg"><b>'+top.title+'</b><p>'+top.detail+'</p>'+more+'</div>';
+  }
+
+  // Onglets
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(t){
+    t.addEventListener('click',function(){
+      document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});
+      document.querySelectorAll('.view').forEach(function(x){x.classList.remove('on');});
+      t.classList.add('on'); $('#v-'+t.dataset.v).classList.add('on');
+    });
+  });
+
+  // Secteur
+  $('#secteur').addEventListener('change',function(){
+    p = PROFILES[this.value] || PROFILES.generique;
+    applyProfile(); render();
+  });
+
+  // Saisie live
+  Object.keys(f).forEach(function(k){ f[k].addEventListener('input',render); });
+
+  // Boutons
+  $('#reset').addEventListener('click',function(){ $('#form').reset(); p=PROFILES.generique; applyProfile(); render(); });
+  $('#print').addEventListener('click',function(){ window.print(); });
+  $('#theme').addEventListener('click',function(){
+    var r=document.documentElement, cur=r.getAttribute('data-theme');
+    var dark=cur? cur==='dark' : window.matchMedia('(prefers-color-scheme:dark)').matches;
+    r.setAttribute('data-theme', dark?'light':'dark');
+  });
+
+  applyProfile();
+  render();
+})();
+</script>
+</body>
+</html>
