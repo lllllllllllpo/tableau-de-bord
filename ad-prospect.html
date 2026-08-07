@@ -2,36 +2,34 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Visuel pub prospect offert</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:#0f2138}
-  .ad{width:1080px;height:1080px;position:relative;overflow:hidden;
+  html,body{height:100%;background:#0f2138;overflow:hidden}
+  body{display:flex;align-items:center;justify-content:center}
+  .wrap{position:relative;width:100vmin;height:100vmin;overflow:hidden}
+  .ad{position:absolute;top:0;left:0;width:1080px;height:1080px;transform-origin:top left;
     background:radial-gradient(120% 90% at 80% 0%, #2a4d78 0%, #1f3a5f 42%, #10233c 100%);
     font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#fff;
     padding:74px 74px 66px}
   .glow{position:absolute;width:620px;height:620px;border-radius:50%;
     background:radial-gradient(circle,#e0483d55,transparent 62%);top:-160px;right:-140px;filter:blur(6px)}
   .top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2}
-  .brand{background:#fff;color:#1f3a5f;font-weight:800;letter-spacing:1.5px;font-size:24px;
-    padding:11px 20px;border-radius:12px}
+  .brand{background:#fff;color:#1f3a5f;font-weight:800;letter-spacing:1.5px;font-size:24px;padding:11px 20px;border-radius:12px}
   .eyebrow{font-size:19px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#bcd0ec}
-
   .headline{position:relative;z-index:2;margin-top:52px;max-width:600px}
-  .headline .k{display:inline-block;background:#e0483d;color:#fff;font-size:22px;font-weight:800;
-    letter-spacing:1px;text-transform:uppercase;padding:9px 18px;border-radius:30px;margin-bottom:22px}
+  .headline .k{display:inline-block;background:#e0483d;color:#fff;font-size:22px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:9px 18px;border-radius:30px;margin-bottom:22px}
   .headline h1{font-size:82px;line-height:1.02;font-weight:800;letter-spacing:-2px}
   .headline h1 .hl{color:#ffd25a}
   .headline p{font-size:29px;color:#cfe0f5;margin-top:22px;line-height:1.35;max-width:560px;font-weight:500}
-
-  .card{position:absolute;z-index:3;right:70px;bottom:210px;width:430px;background:#fff;color:#182230;
-    border-radius:22px;padding:26px 26px 22px;box-shadow:0 40px 90px rgba(0,0,0,.45);transform:rotate(3deg)}
+  .card{position:absolute;z-index:3;right:70px;bottom:210px;width:430px;background:#fff;color:#182230;border-radius:22px;padding:26px 26px 22px;box-shadow:0 40px 90px rgba(0,0,0,.45);transform:rotate(3deg)}
   .card .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
   .card .ch b{font-size:15px;letter-spacing:1.5px;text-transform:uppercase;color:#5f6b7a}
-  .card .badge{display:inline-flex;align-items:center;gap:6px;background:#e7f4ec;color:#1f7a4d;
-    font-size:14px;font-weight:800;padding:6px 12px;border-radius:20px}
+  .card .badge{display:inline-flex;align-items:center;gap:6px;background:#e7f4ec;color:#1f7a4d;font-size:14px;font-weight:800;padding:6px 12px;border-radius:20px}
   .row{display:flex;align-items:center;gap:13px;padding:12px 0;border-top:1px solid #eef1f5}
-  .row .ic{width:42px;height:42px;flex:none;border-radius:11px;background:#eef2f8;
-    display:flex;align-items:center;justify-content:center;font-size:20px}
+  .row .ic{width:42px;height:42px;flex:none;border-radius:11px;background:#eef2f8;display:flex;align-items:center;justify-content:center;font-size:20px}
   .row .lab{font-size:13px;color:#8a93a1;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
   .row .val{font-size:19px;font-weight:700;color:#182230;margin-top:2px}
   .bar{height:14px;border-radius:7px;background:linear-gradient(90deg,#cdd6e2,#e6ebf2);width:150px;margin-top:6px}
@@ -39,41 +37,41 @@
   .signal{background:#fff3ec;border:1.5px solid #f4c3ac}
   .signal .ic{background:#e0483d;color:#fff}
   .signal .val{color:#c23a30}
-
   .foot{position:absolute;left:74px;right:74px;bottom:64px;z-index:2;display:flex;align-items:center;gap:20px}
-  .gratuit{background:#ffd25a;color:#1f3a5f;font-weight:900;font-size:26px;letter-spacing:.5px;
-    padding:16px 26px;border-radius:16px;white-space:nowrap}
+  .gratuit{background:#ffd25a;color:#1f3a5f;font-weight:900;font-size:26px;letter-spacing:.5px;padding:16px 26px;border-radius:16px;white-space:nowrap}
   .cta{font-size:26px;font-weight:700;color:#fff}
   .cta .arrow{color:#ffd25a}
 </style>
 </head>
 <body>
-  <div class="ad" id="ad">
-    <div class="glow"></div>
-
-    <div class="top">
-      <div class="brand">LAB0</div>
-      <div class="eyebrow">Offert aux dirigeants</div>
-    </div>
-
-    <div class="headline">
-      <span class="k">Cadeau</span>
-      <h1>1 prospect<br><span class="hl">ultra-qualifié.</span></h1>
-      <p>Dites-nous votre client idéal. On le trouve pour vous et on vous l'envoie sous 48h.</p>
-    </div>
-
-    <div class="card">
-      <div class="ch"><b>Fiche prospect</b><span class="badge">✓ Qualifié</span></div>
-      <div class="row"><div class="ic">🏢</div><div><div class="lab">Entreprise cible</div><div class="bar"></div></div></div>
-      <div class="row"><div class="ic">👤</div><div><div class="lab">Le bon décideur</div><div class="val">Directeur commercial</div></div></div>
-      <div class="row"><div class="ic">🔒</div><div><div class="lab">Coordonnées</div><div class="bar sm"></div></div></div>
-      <div class="row signal"><div class="ic">🔥</div><div><div class="lab">Signal</div><div class="val">Recrute en ce moment</div></div></div>
-    </div>
-
-    <div class="foot">
-      <div class="gratuit">100% GRATUIT</div>
-      <div class="cta">Construisez votre client idéal <span class="arrow">→</span></div>
+  <div class="wrap">
+    <div class="ad" id="ad">
+      <div class="glow"></div>
+      <div class="top">
+        <div class="brand">LAB0</div>
+        <div class="eyebrow">Offert aux dirigeants</div>
+      </div>
+      <div class="headline">
+        <span class="k">Cadeau</span>
+        <h1>1 prospect<br><span class="hl">ultra-qualifié.</span></h1>
+        <p>Dites-nous votre client idéal. On le trouve pour vous et on vous l'envoie sous 48h.</p>
+      </div>
+      <div class="card">
+        <div class="ch"><b>Fiche prospect</b><span class="badge">✓ Qualifié</span></div>
+        <div class="row"><div class="ic">🏢</div><div><div class="lab">Entreprise cible</div><div class="bar"></div></div></div>
+        <div class="row"><div class="ic">👤</div><div><div class="lab">Le bon décideur</div><div class="val">Directeur commercial</div></div></div>
+        <div class="row"><div class="ic">🔒</div><div><div class="lab">Coordonnées</div><div class="bar sm"></div></div></div>
+        <div class="row signal"><div class="ic">🔥</div><div><div class="lab">Signal</div><div class="val">Recrute en ce moment</div></div></div>
+      </div>
+      <div class="foot">
+        <div class="gratuit">100% GRATUIT</div>
+        <div class="cta">Construisez votre client idéal <span class="arrow">→</span></div>
+      </div>
     </div>
   </div>
+<script>
+  function fit(){ var s=Math.min(window.innerWidth,window.innerHeight)/1080; document.getElementById('ad').style.transform='scale('+s+')'; }
+  window.addEventListener('resize',fit); fit();
+</script>
 </body>
 </html>
