@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Votre prospect ultra-qualifié, offert</title>
+<meta name="description" content="Décrivez votre client idéal, on vous trouve un prospect ultra-qualifié (entreprise, décideur, coordonnées, signal) et on vous l'envoie sous 48h.">
+<style>
+  :root{
+    --paper:#f3f5f8; --card:#ffffff; --ink:#182230; --ink-soft:#616b7a;
+    --line:#e6e9ef; --line-strong:#d5dae3; --navy:#1f3a5f; --navy-d:#152a44; --navy-tint:#eef2f8;
+    --accent:#cf4436; --accent-tint:#fbeceb;
+    --green:#2f7d59; --amber:#a9791a; --red:#c0453a; --chip:#eef1f5;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --shadow-sm:0 1px 2px rgba(20,30,50,.05);
+    --shadow-md:0 6px 20px rgba(31,58,95,.12);
+    --shadow-lg:0 18px 44px rgba(31,58,95,.16);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .top{display:flex;align-items:center;justify-content:center;gap:11px;background:#fff;border-bottom:1px solid var(--line);padding:15px;font-size:13px;color:var(--ink-soft)}
+  .top b{background:var(--navy);color:#fff;font-weight:800;letter-spacing:.6px;font-size:12.5px;padding:5px 10px;border-radius:7px}
+  .progwrap{max-width:600px;margin:28px auto 0;padding:0 20px}
+  .proglabel{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;text-align:right}
+  .progbar{height:6px;background:#e4e8ef;border-radius:20px;overflow:hidden}
+  .progfill{height:100%;background:linear-gradient(90deg,var(--accent),#e0685b);width:0;border-radius:20px;transition:width .5s cubic-bezier(.22,.61,.36,1)}
+
+  .stage{max-width:680px;margin:0 auto;padding:40px 20px 80px;min-height:62vh;display:flex;flex-direction:column;justify-content:center}
+  .stage>*{animation:rise .4s cubic-bezier(.22,.61,.36,1) both}
+  .back{background:none;border:0;color:var(--ink-soft);font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-bottom:20px;align-self:center;padding:6px 10px;border-radius:8px;transition:background .15s}
+  .back:hover{color:var(--navy);background:var(--navy-tint)}
+  .q{font-size:28px;font-weight:700;text-align:center;line-height:1.22;letter-spacing:-.015em;margin:0 auto 12px;max-width:20ch;color:var(--ink)}
+  @media (max-width:600px){.q{font-size:22px}}
+  .qsub{font-size:15.5px;color:var(--ink-soft);text-align:center;margin:0 auto 28px;max-width:52ch}
+  .hint{display:block;width:max-content;margin:0 auto 20px;font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--navy);background:var(--navy-tint);padding:5px 12px;border-radius:20px;text-align:center}
+
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:0 auto;max-width:660px;width:100%}
+  @media (max-width:600px){.opts{grid-template-columns:1fr}}
+  .opts.single-col{grid-template-columns:1fr;max-width:560px}
+  .opt{display:flex;align-items:center;gap:14px;text-align:left;font:inherit;font-size:15.5px;font-weight:600;color:var(--ink);background:var(--card);border:1.5px solid var(--line-strong);border-radius:14px;padding:16px 18px;cursor:pointer;transition:transform .16s,box-shadow .16s,border-color .16s,background .16s;line-height:1.35;box-shadow:var(--shadow-sm)}
+  .opt:hover{border-color:var(--navy);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+  .opt:active{transform:translateY(0)}
+  .opt.sel{border-color:var(--navy);background:var(--navy-tint);box-shadow:var(--shadow-md)}
+  .opt .em{width:40px;height:40px;flex:none;display:flex;align-items:center;justify-content:center;font-size:19px;background:var(--navy-tint);border-radius:11px}
+  .opt.sel .em{background:#fff}
+
+  /* Saisie guidee */
+  .qinput-wrap{max-width:520px;margin:0 auto;width:100%}
+  .qinput{width:100%;font:inherit;font-size:17px;padding:15px 16px;border:1.5px solid var(--line-strong);border-radius:13px;background:var(--card);color:var(--ink);box-shadow:var(--shadow-sm);transition:border-color .15s,box-shadow .15s;resize:vertical}
+  .qinput:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(31,58,95,.13)}
+
+  .info-t{font-size:27px;font-weight:700;text-align:center;line-height:1.25;letter-spacing:-.015em;margin:0 auto 16px;max-width:22ch}
+  @media (max-width:600px){.info-t{font-size:22px}}
+  .info-p{font-size:16.5px;color:var(--ink-soft);text-align:center;margin:0 auto 10px;max-width:52ch}
+
+  .cta{display:block;margin:32px auto 0;font:inherit;font-size:16px;font-weight:700;padding:16px 36px;border:0;border-radius:13px;background:var(--navy);color:#fff;cursor:pointer;letter-spacing:.01em;box-shadow:0 8px 22px rgba(31,58,95,.24);transition:transform .16s,box-shadow .16s,background .16s}
+  .cta:hover{background:var(--navy-d);transform:translateY(-2px);box-shadow:0 12px 28px rgba(31,58,95,.30)}
+  .cta:active{transform:translateY(0)}
+  .cta[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+  .skip{display:block;margin:14px auto 0;background:none;border:0;color:var(--ink-soft);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer}
+
+  .introproof{max-width:50ch;margin:8px auto 0;text-align:center;font-size:13.5px;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;line-height:1.5}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px auto 0;max-width:480px}
+  .chip{font-size:12px;font-weight:600;color:var(--navy);background:var(--navy-tint);border-radius:20px;padding:6px 13px;display:inline-flex;align-items:center;gap:5px}
+  .chip::before{content:"✓";font-weight:800;color:var(--green)}
+
+  .capture{max-width:470px;margin:0 auto;width:100%;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:30px 28px;box-shadow:var(--shadow-lg)}
+  .recap{background:var(--navy-tint);border-radius:13px;padding:15px 18px;margin-bottom:18px}
+  .recap-t{display:block;font-size:12.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--navy);margin-bottom:8px}
+  .recap ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink)}
+  .recap li{margin-bottom:5px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media (max-width:480px){.row2{grid-template-columns:1fr}}
+  .fld{margin-bottom:13px}
+  .fld label{display:block;font-size:12.5px;font-weight:600;margin-bottom:5px;color:var(--ink)}
+  .fld input{width:100%;font:inherit;font-size:15px;padding:12px 13px;border:1.5px solid var(--line-strong);border-radius:11px;background:#fbfcfd;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+  .fld input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(31,58,95,.13)}
+  .fhint{display:block;font-size:11.5px;color:var(--ink-soft);margin-top:6px;line-height:1.4}
+  .consent{display:flex;gap:9px;font-size:12px;color:var(--ink-soft);margin:8px 0 16px;line-height:1.45}
+  .consent input{margin-top:2px;width:16px;height:16px;flex:none;accent-color:var(--navy)}
+  .trustline{font-size:11.5px;color:var(--ink-soft);text-align:center;margin:12px 0 0;line-height:1.6}
+  .trustline a{color:var(--navy);font-weight:600}
+  .cmsg{font-size:13px;text-align:center;margin-top:11px;min-height:18px}
+  .cmsg.err{color:var(--red)}
+  .hp{position:absolute;left:-9999px}
+
+  /* Confirmation */
+  .done{max-width:640px;margin:0 auto;width:100%}
+  .done-hero{text-align:center;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:34px 24px;box-shadow:var(--shadow-sm);margin-bottom:20px}
+  .done-check{width:60px;height:60px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px}
+  .done-hero h1{font-size:26px;margin:0 0 8px;letter-spacing:-.015em}
+  .done-hero p{color:var(--ink-soft);margin:0 auto;max-width:46ch;font-size:15px}
+  .steps3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:0 0 20px}
+  @media (max-width:600px){.steps3{grid-template-columns:1fr}}
+  .st{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;box-shadow:var(--shadow-sm)}
+  .st .n{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+  .st b{display:block;font-size:14px;margin-bottom:3px}
+  .st span{font-size:12.5px;color:var(--ink-soft);line-height:1.45}
+
+  .founder{display:flex;align-items:center;gap:18px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:0 0 20px;box-shadow:var(--shadow-sm)}
+  .founder-img{width:78px;height:78px;flex:none;border-radius:50%;object-fit:cover;object-position:center 12%;border:2px solid var(--navy-tint);background:#0d1117}
+  .founder-txt{display:flex;flex-direction:column;gap:5px}
+  .founder-txt b{font-size:15.5px;color:var(--ink);line-height:1.3}
+  .founder-txt span{font-size:13px;color:var(--ink-soft);line-height:1.5}
+  @media (max-width:600px){.founder{flex-direction:column;text-align:center;gap:12px}}
+
+  .res-final{background:linear-gradient(140deg,var(--navy),var(--navy-d));color:#fff;border-radius:20px;padding:34px 26px;text-align:center;box-shadow:var(--shadow-md)}
+  .res-final h2{margin:0 0 10px;font-size:22px;letter-spacing:-.01em}
+  .res-final p{margin:0 auto 6px;max-width:46ch;opacity:.92;font-size:15px}
+  .res-final .cta{background:#fff;color:var(--navy);box-shadow:0 8px 22px rgba(0,0,0,.28)}
+  .res-final .cta:hover{background:#eef2f8}
+
+  .foot{text-align:center;font-size:11px;color:var(--ink-soft);padding:28px 20px;max-width:780px;margin:0 auto;line-height:1.6}
+  .foot a{color:var(--navy)}
+  .hide{display:none}
+</style>
+<!-- Meta Pixel Lelab0 -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','1694768290711053'); fbq('track','PageView');
+window.fbLead=function(){ try{ if(window.fbq) fbq('track','Lead'); }catch(e){} };
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1694768290711053&ev=PageView&noscript=1"/></noscript>
+</head>
+<body>
+
+  <div class="top"><b>Lab0</b> · Votre prospect offert</div>
+
+  <div class="progwrap">
+    <div class="proglabel"><span id="pct">0</span>% complet</div>
+    <div class="progbar"><div class="progfill" id="progfill"></div></div>
+  </div>
+
+  <div class="stage" id="stage"></div>
+
+  <div class="foot" id="foot">
+    <a href="confidentialite.html" target="_blank" rel="noopener">Politique de confidentialité</a> · <a href="https://lelab0.com" target="_blank" rel="noopener">Lab0</a><br>
+    Ce site ne fait pas partie du site Facebook ni de Facebook, Inc. Il n'est en aucune façon affilié à ou approuvé par Meta.
+  </div>
+
+<script>
+(function(){
+  // ================= CONFIG =================
+  var WEBHOOK_URL = "https://hook.eu1.make.com/g11dcxuc0vz9lk195uk1b3py8ugoo382";
+  var CALENDAR_URL = "https://calendar.app.google/VSPtFwQLM9pYauXv9";
+  var PRIVACY_URL = "confidentialite.html";
+  // ==========================================
+
+  var STEPS = [
+    { type:'intro',
+      title:"Recevez un prospect ultra-qualifié, offert.",
+      sub:"Décrivez votre client idéal. On vous trouve un vrai prospect chaud — l'entreprise, le bon décideur, ses coordonnées et le signal qui le rend prioritaire — et on vous l'envoie sous 48h.",
+      proof:"Déjà 50 entreprises accompagnées par Lab0. On construit votre système d'acquisition, de gestion et vos tableaux de bord sur mesure.",
+      chips:["Sous 48h","100 % gratuit","Sans engagement","Un vrai prospect chaud"],
+      cta:"Construire mon client idéal" },
+
+    { type:'text', key:'offre', required:true, long:true,
+      q:"Que vendez-vous, en une phrase ?",
+      hint:"Pour bien cibler",
+      placeholder:"Ex : un logiciel de gestion pour les cabinets d'avocats" },
+
+    { type:'text', key:'secteur', required:true,
+      q:"Quel secteur d'activité visez-vous ?",
+      placeholder:"Ex : BTP, industrie, cabinets d'expertise comptable…" },
+
+    { type:'choice', key:'taille', multi:false,
+      q:"Quelle taille d'entreprise ciblez-vous ?",
+      options:[
+        {label:"1 à 10 salariés"},{label:"11 à 50 salariés"},
+        {label:"51 à 250 salariés"},{label:"Plus de 250 salariés"},{label:"Peu importe"}
+      ]},
+
+    { type:'text', key:'zone', required:true,
+      q:"Sur quelle zone géographique ?",
+      placeholder:"Ex : Île-de-France, Grand Ouest, toute la France…" },
+
+    { type:'choice', key:'fonction', multi:false,
+      q:"Quel décideur voulez-vous contacter ?",
+      options:[
+        {em:'👔', label:"Dirigeant / Gérant"},
+        {em:'📈', label:"Directeur commercial / Head of Sales"},
+        {em:'💶', label:"Directeur administratif et financier (DAF)"},
+        {em:'👥', label:"Directeur des ressources humaines (DRH)"},
+        {em:'📣', label:"Directeur marketing"},
+        {em:'🤷', label:"Autre / je ne sais pas encore"}
+      ]},
+
+    { type:'choice', key:'signal', multi:false, optional:true,
+      q:"Un signal qui rendrait le prospect prioritaire ?",
+      hint:"Optionnel — c'est là qu'on fait la différence",
+      options:[
+        {em:'📢', label:"Recrute en ce moment"},
+        {em:'🚀', label:"Vient de lever des fonds / forte croissance"},
+        {em:'🧩', label:"Utilise une techno / un outil précis"},
+        {em:'🔄', label:"Changement récent de dirigeant"},
+        {em:'—', label:"Pas de préférence"}
+      ]},
+
+    { type:'info',
+      title:"Parfait, on a de quoi lancer une recherche ciblée.",
+      p:["Laissez-nous vos coordonnées et on vous envoie votre prospect ultra-qualifié sous 48h."],
+      cta:"Recevoir mon prospect" },
+
+    { type:'capture' },
+    { type:'done' }
+  ];
+
+  var TESTIMONIALS = [
+    { quote:"Julien a été au cœur de notre transformation commerciale. Grâce à son expertise, notre capacité à attirer et convertir des prospects a significativement évolué.", author:"Cyril Prouvot — Business Developer, PIC DIGITAL" },
+    { quote:"Une vraie chance d'être tombé sur le Lab0 pour optimiser notre process commercial. Julien est un expert solide, clair, attentif. Une pépite pour accélérer.", author:"Pulse Communication" }
+  ];
+
+  var idx=0, answers={}, stage=document.getElementById('stage');
+
+  function setProgress(){ var p=Math.round(idx/(STEPS.length-1)*100); document.getElementById('pct').textContent=p; document.getElementById('progfill').style.width=p+'%'; }
+  function el(tag,cls,html){ var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; }
+  function next(){ if(idx<STEPS.length-1){ idx++; render(); } }
+  function back(){ if(idx>0){ idx--; render(); } }
+  function addBack(){ if(idx===0)return; var b=el('button','back','← Retour'); b.onclick=back; stage.appendChild(b); }
+  function longOpts(opts){ return opts.some(function(o){ return o.label.length>44; }); }
+
+  function render(){
+    var s=STEPS[idx];
+    stage.innerHTML=''; setProgress(); window.scrollTo(0,0);
+    document.getElementById('foot').classList.toggle('hide', s.type==='done');
+
+    if(s.type==='intro' || s.type==='info'){
+      if(s.type==='info') addBack();
+      stage.appendChild(el(s.type==='intro'?'h1':'h2', s.type==='intro'?'q':'info-t', s.title));
+      if(s.sub) stage.appendChild(el('p','qsub', s.sub));
+      if(s.p) s.p.forEach(function(t){ stage.appendChild(el('p','info-p', t)); });
+      if(s.proof) stage.appendChild(el('p','introproof', s.proof));
+      var c=el('button','cta', s.cta); c.onclick=next; stage.appendChild(c);
+      if(s.chips){ var ch=el('div','chips'); s.chips.forEach(function(t){ ch.appendChild(el('span','chip', t)); }); stage.appendChild(ch); }
+      return;
+    }
+
+    if(s.type==='text'){
+      addBack();
+      stage.appendChild(el('h2','q', s.q));
+      if(s.hint) stage.appendChild(el('p','hint', s.hint));
+      var wrap=el('div','qinput-wrap');
+      var inp=document.createElement(s.long?'textarea':'input');
+      inp.className='qinput'; inp.placeholder=s.placeholder||''; if(s.long) inp.rows=3;
+      if(answers[s.key]) inp.value=answers[s.key];
+      wrap.appendChild(inp); stage.appendChild(wrap);
+      var c=el('button','cta','Continuer');
+      function go(){ answers[s.key]=inp.value.trim(); next(); }
+      function sync(){ if(s.required) c.disabled = !inp.value.trim(); }
+      c.onclick=go; stage.appendChild(c);
+      inp.addEventListener('input', sync); sync();
+      if(!s.long) inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); if(!s.required||inp.value.trim()) go(); } });
+      setTimeout(function(){ inp.focus(); }, 60);
+      return;
+    }
+
+    if(s.type==='choice'){
+      addBack();
+      stage.appendChild(el('h2','q', s.q));
+      if(s.hint) stage.appendChild(el('p','hint', s.hint));
+      var grid=el('div','opts'); if(s.options.length>4 || longOpts(s.options)) grid.classList.add('single-col');
+      var current=answers[s.key]||(s.multi?[]:null);
+      s.options.forEach(function(o){
+        var b=el('button','opt', (o.em?'<span class="em">'+o.em+'</span>':'')+'<span>'+o.label+'</span>');
+        if(s.multi ? current.indexOf(o.label)>-1 : current===o.label) b.classList.add('sel');
+        b.onclick=function(){
+          if(s.multi){ var arr=answers[s.key]||[]; var i=arr.indexOf(o.label); if(i>-1)arr.splice(i,1); else arr.push(o.label); answers[s.key]=arr; render(); }
+          else { answers[s.key]=o.label; next(); }
+        };
+        grid.appendChild(b);
+      });
+      stage.appendChild(grid);
+      if(s.multi){ var c=el('button','cta','Continuer'); c.disabled=!(answers[s.key]&&answers[s.key].length); c.onclick=next; stage.appendChild(c); }
+      return;
+    }
+
+    if(s.type==='capture'){ renderCapture(); return; }
+    if(s.type==='done'){ renderDone(); return; }
+  }
+
+  function renderCapture(){
+    addBack();
+    stage.appendChild(el('h2','q',"Où envoie-t-on votre prospect ?"));
+    stage.appendChild(el('p','qsub',"On vous l'envoie sous 48h, et on vous prévient dès qu'il est prêt."));
+    var box=el('div','capture');
+    box.innerHTML =
+      '<div class="recap"><span class="recap-t">Vous recevez sous 48h :</span>'+
+        '<ul><li>L\'<b>entreprise</b> qui correspond à votre cible</li>'+
+        '<li>Le <b>bon décideur</b> et ses <b>coordonnées</b></li>'+
+        '<li>Le <b>signal</b> qui le rend prioritaire maintenant</li></ul></div>'+
+      '<form id="capForm">'+
+      '<input type="text" name="website" class="hp" tabindex="-1" autocomplete="off">'+
+      '<div class="row2">'+
+        '<div class="fld"><label>Prénom</label><input name="prenom" type="text" required></div>'+
+        '<div class="fld"><label>Nom</label><input name="nom" type="text" required></div>'+
+      '</div>'+
+      '<div class="fld"><label>Email</label><input name="email" type="email" required></div>'+
+      '<div class="fld"><label>Téléphone portable</label><input name="tel" type="tel" inputmode="tel" placeholder="06 12 34 56 78" required>'+
+        '<span class="fhint">Pour vous envoyer votre prospect et, si vous le souhaitez, échanger 15 min. Aucun appel non sollicité.</span></div>'+
+      '<label class="consent"><input type="checkbox" id="rgpd" required><span>J\'accepte d\'être recontacté au sujet de mon prospect.</span></label>'+
+      '<button class="cta" type="submit" style="width:100%" id="capBtn">Recevoir mon prospect ultra-qualifié</button>'+
+      '<p class="trustline">Vos données ne sont jamais revendues. Désinscription en 1 clic.<br><a href="'+PRIVACY_URL+'" target="_blank" rel="noopener">Politique de confidentialité</a></p>'+
+      '<div class="cmsg" id="capMsg"></div>'+
+      '</form>';
+    stage.appendChild(box);
+
+    var f=box.querySelector('#capForm');
+    f.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(f.website.value){ next(); return; }
+      if(!box.querySelector('#rgpd').checked){ var m=box.querySelector('#capMsg'); m.textContent='Merci de cocher la case pour continuer.'; m.className='cmsg err'; return; }
+      answers.prenom=f.prenom.value; answers.nom=f.nom.value; answers.email=f.email.value; answers.telephone=f.tel.value;
+      var btn=box.querySelector('#capBtn'); btn.disabled=true; btn.textContent='Envoi...';
+      sendLead(function(){ next(); });
+    });
+  }
+
+  function sendLead(done){
+    if(window.fbLead) window.fbLead();
+    var p=new URLSearchParams();
+    p.append('source','prospect-offert');
+    p.append('formulaire','Prospect offert');
+    p.append('page', location.href);
+    Object.keys(answers).forEach(function(k){ var v=answers[k]; p.append(k, Array.isArray(v)?v.join(' | '):v); });
+    var fin=false; var go=function(){ if(!fin){ fin=true; done(); } };
+    fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:p.toString(),keepalive:true}).then(go).catch(go);
+    setTimeout(go, 2500);
+  }
+
+  function renderDone(){
+    var d=el('div','done');
+    var hero=el('div','done-hero');
+    hero.appendChild(el('div','done-check','✓'));
+    hero.appendChild(el('h1', null, "Bien reçu"+(answers.prenom?', '+answers.prenom:'')+" !"));
+    hero.appendChild(el('p', null, "On lance la recherche de votre prospect ultra-qualifié. Vous le recevez sous 48h par email"+(answers.email?" à "+answers.email:'')+"."));
+    d.appendChild(hero);
+
+    var s3=el('div','steps3');
+    [['1','On analyse votre cible','À partir de votre client idéal, on lance une recherche ciblée avec nos outils.'],
+     ['2','On qualifie le prospect','Entreprise, décideur, coordonnées et le signal qui le rend prioritaire.'],
+     ['3','Vous le recevez sous 48h','Par email, prêt à contacter. On vous prévient dès qu\'il est prêt.']].forEach(function(x){
+      var st=el('div','st'); st.appendChild(el('div','n',x[0])); st.appendChild(el('b',null,x[1])); st.appendChild(el('span',null,x[2])); s3.appendChild(st);
+    });
+    d.appendChild(s3);
+
+    var founder=el('div','founder');
+    founder.innerHTML='<img src="images/julien-breal.png" alt="Julien Bréal, fondateur de Lab0" class="founder-img" loading="lazy">'+
+      '<div class="founder-txt"><b>C\'est Julien Bréal, fondateur de Lab0, qui vous le prépare</b>'+
+      '<span>50 entreprises accompagnées. Pas de commercial ni d\'argumentaire forcé, juste un vrai prospect et un regard d\'expert.</span></div>';
+    d.appendChild(founder);
+
+    var fin=el('div','res-final');
+    fin.appendChild(el('h2', null, "Ne perdez pas de temps : réservez déjà votre échange"));
+    fin.appendChild(el('p', null, "On vous présente votre prospect en direct et on voit ensemble comment aller le chercher. 15 minutes, sans engagement."));
+    var cta=el('a','cta',"Réserver mon échange offert");
+    cta.href=CALENDAR_URL; cta.target='_blank'; cta.rel='noopener'; cta.style.textDecoration='none';
+    fin.appendChild(cta);
+    d.appendChild(fin);
+
+    stage.appendChild(d);
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
