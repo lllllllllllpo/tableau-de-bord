@@ -540,7 +540,8 @@
 
   function sendLead(done){
     var p = new URLSearchParams();
-    p.append('source','diagnostic-lab0');
+    p.append('source','diagnostic');
+    p.append('formulaire','Diagnostic');
     p.append('page', location.href);
     Object.keys(answers).forEach(function(k){
       var v = answers[k]; p.append(k, Array.isArray(v)? v.join(' | ') : v);
