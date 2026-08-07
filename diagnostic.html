@@ -140,7 +140,32 @@
   .edit{background:#fff8e6;border:1px dashed #dbb44e;color:#856212;border-radius:12px;padding:11px 15px;
     font-size:12.5px;margin:16px 0;text-align:center;line-height:1.5}
 
+  /* Intro : preuve sociale + puces de reassurance */
+  .introproof{max-width:50ch;margin:8px auto 0;text-align:center;font-size:13.5px;color:var(--ink-soft);
+    background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;line-height:1.5}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px auto 0;max-width:460px}
+  .chip{font-size:12px;font-weight:600;color:var(--navy);background:var(--navy-tint);
+    border-radius:20px;padding:6px 13px;display:inline-flex;align-items:center;gap:5px}
+  .chip::before{content:"✓";font-weight:800;color:var(--green)}
+
+  /* Capture : rappel valeur + reassurances */
+  .recap{background:var(--navy-tint);border-radius:13px;padding:15px 18px;margin-bottom:18px}
+  .recap-t{display:block;font-size:12.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--navy);margin-bottom:8px}
+  .recap ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink)}
+  .recap li{margin-bottom:5px}
+  .fhint{display:block;font-size:11.5px;color:var(--ink-soft);margin-top:6px;line-height:1.4}
+  .trustline{font-size:11.5px;color:var(--ink-soft);text-align:center;margin:12px 0 0;line-height:1.6}
+  .trustline a{color:var(--navy);font-weight:600}
+
+  /* Temoignages */
+  .testis{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%}
+  @media (max-width:600px){.testis{grid-template-columns:1fr}}
+  .testi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px;box-shadow:var(--shadow-sm)}
+  .testi-q{font-size:14.5px;color:var(--ink);margin:0 0 10px;line-height:1.55;font-style:italic}
+  .testi-a{font-size:12.5px;font-weight:700;color:var(--navy);margin:0}
+
   .foot{text-align:center;font-size:11px;color:var(--ink-soft);padding:28px 20px;max-width:780px;margin:0 auto;line-height:1.6}
+  .foot a{color:var(--navy)}
   .hide{display:none}
 </style>
 </head>
@@ -156,6 +181,7 @@
   <div class="stage" id="stage"><!-- injecte par JS --></div>
 
   <div class="foot" id="foot">
+    <a href="confidentialite.html" target="_blank" rel="noopener">Politique de confidentialité</a> · <a href="https://lelab0.com" target="_blank" rel="noopener">Lab0</a><br>
     Ce site ne fait pas partie du site Facebook ni de Facebook, Inc. Il n'est en aucune façon affilié à ou approuvé par Meta.
   </div>
 
@@ -164,6 +190,12 @@
   // ================= CONFIG =================
   var WEBHOOK_URL = "https://hook.eu1.make.com/g11dcxuc0vz9lk195uk1b3py8ugoo382";
   var CALENDAR_URL = "https://calendar.app.google/VSPtFwQLM9pYauXv9";
+  var PRIVACY_URL = "confidentialite.html";
+  var TESTIMONIALS = [
+    { quote:"Temps de gestion divisé par deux. Zéro double saisie.", author:"Cabinet Amerha — Avocats, Paris" },
+    { quote:"[Ajoutez ici un vrai témoignage client]", author:"Prénom Nom — Entreprise" },
+    { quote:"[Ajoutez ici un vrai témoignage client]", author:"Prénom Nom — Entreprise" }
+  ];
   // ==========================================
 
   // Chaque etape. type: intro | info | choice | scale | capture | results
@@ -171,6 +203,8 @@
     { type:'intro',
       title:"Obtenez votre plan de croissance personnalisé en 3 minutes.",
       sub:"Un diagnostic en 4 piliers pour comprendre ce qui bloque vraiment votre entreprise, et quoi faire en priorité.",
+      proof:"Déjà 50 entreprises accompagnées par Lab0. On construit votre système d'acquisition, de gestion et vos tableaux de bord sur mesure.",
+      chips:["3 minutes","100 % gratuit","Résultat immédiat","Sans carte bancaire"],
       cta:"Démarrer le diagnostic" },
 
     { type:'choice', key:'situations', multi:true,
@@ -435,7 +469,9 @@
       stage.appendChild(el('h1', s.type==='intro'?'q':'info-t', s.title));
       if(s.sub) stage.appendChild(el('p','qsub', s.sub));
       if(s.p) s.p.forEach(function(t){ stage.appendChild(el('p','info-p', t)); });
+      if(s.proof) stage.appendChild(el('p','introproof', s.proof));
       var c = el('button','cta', s.cta); c.onclick = next; stage.appendChild(c);
+      if(s.chips){ var ch=el('div','chips'); s.chips.forEach(function(t){ ch.appendChild(el('span','chip', t)); }); stage.appendChild(ch); }
       return;
     }
 
@@ -500,6 +536,10 @@
     stage.appendChild(el('p','qsub','Entrez vos coordonnées pour recevoir votre plan d\'action détaillé.'));
     var box = el('div','capture');
     box.innerHTML =
+      '<div class="recap"><span class="recap-t">Vous recevez tout de suite :</span>'+
+        '<ul><li>Votre <b>score de maturité</b> global</li>'+
+        '<li>Votre <b>diagnostic des 4 piliers</b></li>'+
+        '<li>Votre <b>plan d\'action personnalisé</b></li></ul></div>'+
       '<form id="capForm">'+
       '<input type="text" name="website" class="hp" tabindex="-1" autocomplete="off">'+
       '<div class="row2">'+
@@ -507,9 +547,11 @@
         '<div class="fld"><label>Nom</label><input name="nom" type="text" required></div>'+
       '</div>'+
       '<div class="fld"><label>Email</label><input name="email" type="email" required></div>'+
-      '<div class="fld"><label>Téléphone portable</label><input name="tel" type="tel" inputmode="tel" placeholder="06 12 34 56 78" required></div>'+
+      '<div class="fld"><label>Téléphone portable</label><input name="tel" type="tel" inputmode="tel" placeholder="06 12 34 56 78" required>'+
+        '<span class="fhint">Pour vous envoyer votre plan et, si vous le souhaitez, échanger 15 min. Aucun appel non sollicité.</span></div>'+
       '<label class="consent"><input type="checkbox" id="rgpd" required><span>J\'accepte d\'être recontacté au sujet de mon diagnostic.</span></label>'+
       '<button class="cta" type="submit" style="width:100%" id="capBtn">Obtenir mon plan d\'action personnalisé</button>'+
+      '<p class="trustline">Vos données ne sont jamais revendues. Désinscription en 1 clic.<br><a href="'+PRIVACY_URL+'" target="_blank" rel="noopener">Politique de confidentialité</a></p>'+
       '<div class="cmsg" id="capMsg"></div>'+
       '</form>';
     stage.appendChild(box);
@@ -595,13 +637,24 @@
       r.appendChild(c);
     });
 
-    r.appendChild(el('div','edit', "Zone à personnaliser : ajoutez vos vrais chiffres et vos vrais témoignages clients avant de lancer la pub."));
-    r.appendChild(el('div','proof', "Plus de [XX] dirigeants accompagnés par Lab0."));
+    r.appendChild(el('div','proof', "50 entreprises accompagnées par Lab0. On construit votre système d'acquisition, de gestion et vos tableaux de bord sur mesure."));
+
+    // Temoignages
+    r.appendChild(el('div','sectitle', "Ils nous font confiance"));
+    var tw = el('div','testis');
+    TESTIMONIALS.forEach(function(t){
+      var tc = el('div','testi');
+      tc.appendChild(el('p','testi-q', "« "+t.quote+" »"));
+      tc.appendChild(el('p','testi-a', t.author));
+      tw.appendChild(tc);
+    });
+    r.appendChild(tw);
+    r.appendChild(el('div','edit', "À compléter avant de lancer la pub : remplacez les 2 témoignages « Prénom Nom » par de vrais avis clients (variable TESTIMONIALS dans le code)."));
 
     var fin = el('div','res-final');
     fin.appendChild(el('h2', null, "Prêt à transformer ce diagnostic en résultats concrets ?"));
-    fin.appendChild(el('p', null, "Réservez votre appel stratégique offert avec un expert Lab0. Vous repartez avec vos priorités claires."));
-    var cta = el('a','cta', "Réserver mon appel stratégique offert");
+    fin.appendChild(el('p', null, "Réservez un échange de 15 min avec un expert Lab0. On passe en revue votre diagnostic et vos priorités. Sans engagement, aucun argumentaire forcé."));
+    var cta = el('a','cta', "Réserver mon échange offert");
     cta.href = CALENDAR_URL; cta.target='_blank'; cta.rel='noopener'; cta.style.textDecoration='none';
     fin.appendChild(cta);
     r.appendChild(fin);

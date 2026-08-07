@@ -88,7 +88,9 @@
   :root[data-theme=dark] .cta{color:#10131a}
   .cta:hover{opacity:.93} .cta:active{transform:translateY(1px)}
   .cta[disabled]{opacity:.55;cursor:not-allowed}
-  .privacy{font-size:11.5px;color:var(--ink-soft);text-align:center;margin:12px 0 0}
+  .privacy{font-size:11.5px;color:var(--ink-soft);text-align:center;margin:12px 0 0;line-height:1.6}
+  .privacy a{color:var(--navy);font-weight:600}
+  .tel-note{font-size:11.5px;color:var(--ink-soft);margin:6px 0 0;line-height:1.4}
   .msg{font-size:13px;margin:12px 0 0;padding:10px 12px;border-radius:8px;display:none}
   .msg.err{display:block;background:rgba(162,58,46,.1);color:var(--red);border:1px solid var(--red)}
   .msg.ok{display:block;background:rgba(47,109,79,.12);color:var(--green);border:1px solid var(--green)}
@@ -141,6 +143,7 @@
         <div class="field">
           <label for="tel">Téléphone portable</label>
           <input id="tel" name="tel" type="tel" inputmode="tel" placeholder="06 12 34 56 78" required>
+          <p class="tel-note">Pour vous envoyer votre tableau de bord et, si vous le souhaitez, échanger 15 min. Aucun appel non sollicité.</p>
         </div>
 
         <label class="consent">
@@ -149,7 +152,7 @@
         </label>
 
         <button class="cta" type="submit" id="submitBtn">Recevoir mon tableau de bord →</button>
-        <p class="privacy">Gratuit et sans engagement. Désinscription en un clic.</p>
+        <p class="privacy">Gratuit et sans engagement. Vos données ne sont jamais revendues, désinscription en un clic.<br><a href="confidentialite.html" target="_blank" rel="noopener">Politique de confidentialité</a></p>
         <div class="msg" id="formMsg"></div>
       </form>
     </section>
