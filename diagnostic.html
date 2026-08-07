@@ -161,7 +161,9 @@
   .testis{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%}
   @media (max-width:600px){.testis{grid-template-columns:1fr}}
   .testi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px;box-shadow:var(--shadow-sm)}
-  .testi-q{font-size:14.5px;color:var(--ink);margin:0 0 10px;line-height:1.55;font-style:italic}
+  .testi:last-child:nth-child(odd){grid-column:1 / -1}
+  .testi-stars{color:#f5b301;font-size:14px;letter-spacing:3px;margin:0 0 9px}
+  .testi-q{font-size:14.5px;color:var(--ink);margin:0 0 12px;line-height:1.55;font-style:italic}
   .testi-a{font-size:12.5px;font-weight:700;color:var(--navy);margin:0}
 
   .foot{text-align:center;font-size:11px;color:var(--ink-soft);padding:28px 20px;max-width:780px;margin:0 auto;line-height:1.6}
@@ -192,9 +194,9 @@
   var CALENDAR_URL = "https://calendar.app.google/VSPtFwQLM9pYauXv9";
   var PRIVACY_URL = "confidentialite.html";
   var TESTIMONIALS = [
-    { quote:"Temps de gestion divisé par deux. Zéro double saisie.", author:"Cabinet Amerha — Avocats, Paris" },
-    { quote:"[Ajoutez ici un vrai témoignage client]", author:"Prénom Nom — Entreprise" },
-    { quote:"[Ajoutez ici un vrai témoignage client]", author:"Prénom Nom — Entreprise" }
+    { quote:"Julien a été au cœur de notre transformation commerciale. Son écoute et sa pédagogie nous ont beaucoup aidés. Il a mis en place des campagnes multicanales intégrées au CRM Pipedrive, avec l'automatisation d'un lead scoring. Grâce à son expertise, notre capacité à attirer et convertir des prospects a significativement évolué.", author:"Cyril Prouvot — Business Developer, PIC DIGITAL" },
+    { quote:"Une vraie chance d'être tombé sur le Lab0 pour optimiser notre process commercial et automatiser un maximum de tâches chronophages. Julien est un expert solide, clair, attentif. Une pépite pour accélérer.", author:"Pulse Communication" },
+    { quote:"Temps de gestion divisé par deux. Zéro double saisie.", author:"Cabinet Amerha — Avocats, Paris" }
   ];
   // ==========================================
 
@@ -644,12 +646,12 @@
     var tw = el('div','testis');
     TESTIMONIALS.forEach(function(t){
       var tc = el('div','testi');
+      tc.appendChild(el('div','testi-stars', "★★★★★"));
       tc.appendChild(el('p','testi-q', "« "+t.quote+" »"));
       tc.appendChild(el('p','testi-a', t.author));
       tw.appendChild(tc);
     });
     r.appendChild(tw);
-    r.appendChild(el('div','edit', "À compléter avant de lancer la pub : remplacez les 2 témoignages « Prénom Nom » par de vrais avis clients (variable TESTIMONIALS dans le code)."));
 
     var fin = el('div','res-final');
     fin.appendChild(el('h2', null, "Prêt à transformer ce diagnostic en résultats concrets ?"));
