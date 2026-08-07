@@ -100,6 +100,15 @@
   .pill p{font-size:14px;color:var(--ink-soft);margin:0 0 10px}
   .pill ul{margin:0;padding-left:18px;font-size:14px}
   .pill li{margin-bottom:6px}
+  .pill-right{display:flex;align-items:center;gap:10px}
+  .badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    padding:3px 9px;border-radius:20px;color:#fff;white-space:nowrap}
+  .pill-actlab{font-weight:700;color:var(--ink);margin:12px 0 6px;font-size:13.5px}
+  .synth{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:12px;padding:20px 22px;margin:0 0 10px}
+  .synth h3{margin:0 0 12px;font-size:19px;line-height:1.3}
+  .synth p{font-size:14.5px;color:var(--ink-soft);margin:0 0 10px;line-height:1.6}
+  .synth p:last-child{margin-bottom:0}
   .sectitle{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);
     text-align:center;margin:34px 0 6px}
   .res-final{background:var(--navy);color:#fff;border-radius:16px;padding:30px 24px;text-align:center;margin-top:30px}
@@ -300,6 +309,80 @@
   };
   var PILLARS = ['Acquisition','Process','Délégation','Pilotage'];
 
+  // ================= MOTEUR DE DIAGNOSTIC =================
+  function tierOf(p){ return p<=40?'critique':p<=60?'fragile':p<=80?'progression':'solide'; }
+  var TIER = {
+    critique:{label:"Point critique", color:"var(--red)"},
+    fragile:{label:"Fragile", color:"var(--amber)"},
+    progression:{label:"En progression", color:"var(--navy)"},
+    solide:{label:"Solide", color:"var(--green)"}
+  };
+  // Mecanisme : pourquoi ce pilier, quand il est faible, bloque la croissance
+  var MECH = {
+    "Acquisition":"Tant que vos clients arrivent surtout par bouche-à-oreille ou par à-coups, votre croissance reste subie : vous attendez votre chiffre au lieu de le décider. C'est la première cause de plafonnement chez les dirigeants de TPE.",
+    "Process":"Sans process écrits, tout dépend de votre présence et de votre mémoire. Chaque tâche repasse par vous, les mêmes erreurs reviennent, et l'entreprise ne peut pas grandir plus vite que votre capacité à tout tenir de tête.",
+    "Délégation":"Aujourd'hui, vous êtes le goulot d'étranglement de votre propre entreprise. Tant que rien ne tourne sans vous, vous ne dirigez pas vraiment : vous occupez le poste le plus surchargé de la boîte, et c'est lui qui fixe le plafond.",
+    "Pilotage":"Piloter au ressenti, c'est avancer dans le brouillard. Vous découvrez les problèmes (trésorerie, marge, impayés) une fois qu'ils ont déjà coûté cher, au lieu de les anticiper. C'est le point faible le plus sournois, car il vous cache tous les autres."
+  };
+  // Diagnostic detaille par pilier ET par niveau
+  var DIAG = {
+    "Acquisition":{
+      critique:"Votre acquisition est aujourd'hui votre talon d'Achille. Vous n'avez pas de canal fiable qui vous amène des clients régulièrement : vous dépendez du bouche-à-oreille et des opportunités. Résultat, vous ne pouvez pas prévoir votre chiffre, donc pas le piloter.",
+      fragile:"Vous avez quelques sources de clients, mais rien de vraiment prévisible. Les bons mois succèdent aux mauvais sans que vous sachiez toujours pourquoi. Il vous manque un canal maîtrisé, que vous pouvez actionner quand vous le décidez.",
+      progression:"Votre acquisition se structure : vous avez des sources identifiées qui fonctionnent. L'enjeu maintenant est de fiabiliser et de mesurer, pour passer de « ça marche à peu près » à « je sais exactement d'où viennent mes clients ».",
+      solide:"Votre acquisition est un vrai point fort : vous avez des canaux prévisibles. Veillez à ne pas dépendre d'un seul et à garder une longueur d'avance sur la concurrence."
+    },
+    "Process":{
+      critique:"Presque tout est dans votre tête. Aucune tâche clé n'est écrite ni transmissible : rien ne peut se faire sans vous, ni être délégué proprement. C'est ce qui vous enferme dans l'opérationnel et fait revenir les mêmes erreurs.",
+      fragile:"Quelques habitudes existent, mais peu sont formalisées. Chacun fait un peu à sa façon, ce qui crée des allers-retours, des oublis et une qualité irrégulière.",
+      progression:"Vous avez commencé à poser des process. Il faut maintenant les étendre à vos tâches les plus chronophages et vous assurer qu'ils sont réellement utilisés au quotidien.",
+      solide:"Vos process sont un atout : votre entreprise fonctionne de façon répétable. Continuez à les faire vivre et à automatiser ce qui peut l'être."
+    },
+    "Délégation":{
+      critique:"Tout repose sur vous. Si vous vous arrêtez, l'entreprise s'arrête. Vous n'êtes pas dirigeant à plein temps : vous occupez le poste le plus surchargé de votre entreprise, et c'est ce qui plafonne votre croissance.",
+      fragile:"Vous déléguez un peu, mais vous devez encore tout revérifier. La délégation vous coûte presque autant de temps qu'elle vous en fait gagner, parce que les rôles et les résultats attendus ne sont pas assez clairs.",
+      progression:"Vous avez commencé à confier des missions. L'étape suivante : clarifier les rôles et instaurer un pilotage régulier, pour lâcher prise sans perdre le contrôle.",
+      solide:"Vous savez déléguer : votre équipe porte une part réelle de l'activité. Votre rôle peut se recentrer sur la stratégie et le développement."
+    },
+    "Pilotage":{
+      critique:"Vous pilotez à l'aveugle. Sans visibilité sur votre trésorerie, votre marge et vos coûts, vous subissez les problèmes au lieu de les anticiper. C'est le pilier le plus dangereux : il vous empêche de voir venir tous les autres.",
+      fragile:"Vous avez quelques repères, mais pas de tableau de bord régulier. Vous découvrez encore trop de choses en retard, une fois qu'elles ont déjà eu un impact sur votre trésorerie ou votre marge.",
+      progression:"Vous suivez déjà certains indicateurs. Il faut en faire un rituel hebdomadaire et y associer des règles de décision claires, pour agir tôt plutôt que subir.",
+      solide:"Votre pilotage est solide : vous connaissez vos chiffres et vous décidez à partir de faits, pas d'impressions. C'est ce qui sécurise toute votre croissance."
+    }
+  };
+
+  function situationsPillars(){
+    var map={"Acquisition":"Acquisition","Délégation":"Délégation","Structuration":"Process","Rentabilité":"Pilotage"};
+    var out=[]; (answers.situations||[]).forEach(function(l){
+      Object.keys(map).forEach(function(k){ if(l.indexOf(k)===0) out.push(map[k]); });
+    }); return out;
+  }
+  function ambition(){ var o=answers.objectif||""; if(o.indexOf("doubler")>-1||o.indexOf("multiplier")>-1) return "haute"; if(o.indexOf("20")>-1) return "moyenne"; return "basse"; }
+  function heavyLoad(){ var h=answers.heures||""; return h.indexOf("51")>-1||h.indexOf("Plus de 60")>-1; }
+  function strained(){ var r=answers.ressenti||""; return r.indexOf("pas du tout")>-1||r.indexOf("compliqué")>-1; }
+
+  function buildSynthesis(){
+    var arr = PILLARS.map(function(p){return {p:p,s:pillarPct(p)};}).sort(function(a,b){return a.s-b.s;});
+    var w=arr[0], w2=arr[1];
+    var twoWeak = (w2.s - w.s)<=8 && w2.s<=55;
+    var head = twoWeak ? ("Deux piliers vous freinent en priorité : "+w.p+" et "+w2.p+".")
+                       : ("Votre principal point de blocage aujourd'hui : "+w.p+".");
+    var paras=[];
+    paras.push(MECH[w.p]);
+    if(twoWeak) paras.push("Et ce n'est pas isolé : votre "+w2.p+" est tout aussi fragile ("+w2.s+" %). Les deux s'entretiennent mutuellement, ce qui amplifie le blocage.");
+    var sp=situationsPillars();
+    if(sp.indexOf(w.p)>-1) paras.push("Vous l'aviez d'ailleurs pressenti : vous l'avez coché dès le début du diagnostic. Vos réponses ne font que le confirmer, chiffres à l'appui.");
+    var amb=ambition(), obj=answers.objectif||"";
+    if(amb==="haute") paras.push("Vous visez à "+(obj.indexOf("multiplier")>-1?"multiplier votre chiffre par 3 ou plus":"doubler votre chiffre")+" en 2026. Soyons directs : avec votre "+w.p+" à "+w.s+" %, cet objectif n'est pas atteignable en l'état. Ce n'est pas une question de travailler plus, mais de débloquer ce pilier en premier, sinon l'essentiel de votre énergie continuera de fuir par là.");
+    else if(amb==="moyenne") paras.push("Votre objectif de croissance de 20 à 50 % est réaliste, à condition de renforcer d'abord votre "+w.p+" : c'est le maillon qui limite aujourd'hui votre progression.");
+    else paras.push("Vous souhaitez d'abord stabiliser, et c'est sain. Mais c'est justement votre "+w.p+" qui fragilise cette stabilité : c'est par là qu'il faut commencer.");
+    if(heavyLoad()||strained()) paras.push("Vous travaillez déjà "+(answers.heures||"beaucoup")+" par semaine et le rythme pèse. Le problème n'est donc pas votre implication : c'est qu'elle n'est pas démultipliée. Renforcer ce pilier vous rendra d'abord des heures et de la sérénité, avant même du chiffre.");
+    else paras.push("La bonne nouvelle : un point faible ciblé et corrigé en priorité débloque souvent les autres. Concentrez vos 90 prochains jours ici, plutôt que de vous disperser.");
+    return { head:head, paras:paras, order:arr.map(function(x){return x.p;}) };
+  }
+  // =======================================================
+
   var idx = 0;
   var answers = {};
   var stage = document.getElementById('stage');
@@ -451,34 +534,52 @@
 
   function renderResults(){
     var g = overallPct();
+    var syn = buildSynthesis();
     var r = el('div','results');
+
     var hero = el('div','res-hero');
-    hero.appendChild(el('h1', 'Félicitations '+ (answers.prenom||'') +' !'));
-    hero.appendChild(el('p','Voici votre diagnostic et votre plan d\'action personnalisé.'));
+    hero.appendChild(el('h1', null, "Félicitations "+ (answers.prenom||'') +" !"));
+    hero.appendChild(el('p', null, "Voici votre diagnostic sur mesure et votre plan d'action."));
     hero.appendChild(el('div','globe', g+'%'));
-    hero.appendChild(el('p','Niveau de maturité global de votre entreprise.'));
+    hero.appendChild(el('p', null, "Niveau de maturité global de votre entreprise."));
     r.appendChild(hero);
 
-    r.appendChild(el('div','edit','Zone à personnaliser : ajoutez ici vos vrais chiffres (nb de dirigeants accompagnés) et vos vrais témoignages clients avant de lancer la pub.'));
+    // Synthese sur mesure
+    var syb = el('div','synth');
+    syb.appendChild(el('h3', null, syn.head));
+    syn.paras.forEach(function(t){ syb.appendChild(el('p', null, t)); });
+    r.appendChild(syb);
 
-    r.appendChild(el('div','sectitle','Partie 1 · Votre diagnostic en 4 piliers'));
-    PILLARS.forEach(function(pl){
+    // Piliers, du plus faible au plus fort (le point faible est mis en avant)
+    r.appendChild(el('div','sectitle', "Votre diagnostic en 4 piliers"));
+    syn.order.forEach(function(pl){
       var pct = pillarPct(pl);
+      var t = tierOf(pct);
+      var ti = TIER[t];
       var plan = PLAN[pl];
       var c = el('div','pill');
-      var h = el('div','pill-h'); h.appendChild(el('b', pl)); h.appendChild(el('span','pill-pct', pct+'%')); c.appendChild(h);
-      var bar = el('div','pill-bar'); var span=el('span'); span.style.width=pct+'%'; bar.appendChild(span); c.appendChild(bar);
-      c.appendChild(el('p', plan.intro));
-      var ul = el('ul'); plan.actions.forEach(function(a){ ul.appendChild(el('li', a)); }); c.appendChild(ul);
+      var h = el('div','pill-h');
+      h.appendChild(el('b', null, pl));
+      var right = el('div','pill-right');
+      var badge = el('span','badge', ti.label); badge.style.background = ti.color;
+      right.appendChild(badge);
+      right.appendChild(el('span','pill-pct', pct+'%'));
+      h.appendChild(right);
+      c.appendChild(h);
+      var bar = el('div','pill-bar'); var span=el('span'); span.style.width=pct+'%'; span.style.background=ti.color; bar.appendChild(span); c.appendChild(bar);
+      c.appendChild(el('p', null, DIAG[pl][t]));
+      c.appendChild(el('p','pill-actlab', (t==='solide'||t==='progression') ? "Pour aller plus loin :" : "À mettre en place en priorité :"));
+      var ul = el('ul'); plan.actions.forEach(function(a){ ul.appendChild(el('li', null, a)); }); c.appendChild(ul);
       r.appendChild(c);
     });
 
-    r.appendChild(el('div','proof','Plus de [XX] dirigeants accompagnés par Lab0. (Remplacez par votre chiffre réel.)'));
+    r.appendChild(el('div','edit', "Zone à personnaliser : ajoutez vos vrais chiffres et vos vrais témoignages clients avant de lancer la pub."));
+    r.appendChild(el('div','proof', "Plus de [XX] dirigeants accompagnés par Lab0."));
 
     var fin = el('div','res-final');
-    fin.appendChild(el('h2','Prêt à transformer ce diagnostic en résultats concrets ?'));
-    fin.appendChild(el('p','Réservez votre appel stratégique offert avec un expert Lab0. Vous repartez avec les priorités claires pour votre entreprise.'));
-    var cta = el('a','cta','Réserver mon appel stratégique offert');
+    fin.appendChild(el('h2', null, "Prêt à transformer ce diagnostic en résultats concrets ?"));
+    fin.appendChild(el('p', null, "Réservez votre appel stratégique offert avec un expert Lab0. Vous repartez avec vos priorités claires."));
+    var cta = el('a','cta', "Réserver mon appel stratégique offert");
     cta.href = CALENDAR_URL; cta.target='_blank'; cta.rel='noopener'; cta.style.textDecoration='none';
     fin.appendChild(cta);
     r.appendChild(fin);
