@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnostic de croissance — 3 minutes</title>
+<meta name="description" content="Obtenez votre plan de croissance personnalisé en 3 minutes. Diagnostic en 4 piliers pour dirigeants de TPE/PME.">
+<style>
+  :root{
+    --paper:#f6f4ef; --card:#ffffff; --ink:#1c1b19; --ink-soft:#57534c;
+    --line:#e5e0d6; --line-strong:#d6cfc0; --navy:#1f3a5f; --navy-soft:#2f4d78;
+    --accent:#e0483d; --accent-dark:#c23a30;
+    --green:#2f6d4f; --amber:#9a6b12; --red:#a23a2e; --chip:#efeae0;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.5;
+    -webkit-font-smoothing:antialiased}
+
+  /* En-tete + progression */
+  .top{background:#111;color:#fff;text-align:center;padding:14px}
+  .top b{font-weight:800;letter-spacing:.3px;font-size:16px}
+  .progwrap{max-width:520px;margin:22px auto 0;padding:0 20px}
+  .proglabel{font-size:13px;color:var(--ink-soft);margin-bottom:6px}
+  .progbar{height:8px;background:#f0d9d6;border-radius:20px;overflow:hidden}
+  .progfill{height:100%;background:var(--accent);width:0;border-radius:20px;transition:width .4s ease}
+
+  /* Zone principale */
+  .stage{max-width:720px;margin:0 auto;padding:36px 20px 70px;min-height:60vh;
+    display:flex;flex-direction:column;justify-content:center}
+  .back{background:none;border:0;color:var(--ink-soft);font:inherit;font-size:14px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;align-self:center}
+  .back:hover{color:var(--ink)}
+  .q{font-size:26px;font-weight:700;text-align:center;line-height:1.25;margin:0 0 8px}
+  @media (max-width:600px){.q{font-size:21px}}
+  .qsub{font-size:15px;color:var(--ink-soft);text-align:center;margin:0 0 24px}
+  .hint{font-size:12.5px;color:var(--ink-soft);text-align:center;margin:0 0 18px;font-style:italic}
+
+  /* Options choix */
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 auto;max-width:640px;width:100%}
+  @media (max-width:600px){.opts{grid-template-columns:1fr}}
+  .opts.single-col{grid-template-columns:1fr;max-width:520px}
+  .opt{display:flex;align-items:center;gap:10px;text-align:left;font:inherit;font-size:15.5px;font-weight:600;
+    color:#fff;background:var(--accent);border:2px solid var(--accent);border-radius:12px;padding:18px 18px;
+    cursor:pointer;transition:transform .05s,filter .15s;line-height:1.3}
+  .opt:hover{filter:brightness(1.05)} .opt:active{transform:translateY(1px)}
+  .opt.sel{background:var(--accent-dark);border-color:#111;box-shadow:0 0 0 3px rgba(224,72,61,.25)}
+  .opt .em{font-size:18px;flex:none}
+
+  /* Echelle 1-5 */
+  .scale{display:flex;justify-content:center;gap:10px;margin:6px 0 12px;flex-wrap:wrap}
+  .sc{width:56px;height:56px;border-radius:12px;border:2px solid var(--line-strong);background:var(--card);
+    font:inherit;font-size:19px;font-weight:700;color:var(--navy);cursor:pointer;transition:all .12s}
+  .sc:hover{border-color:var(--accent);color:var(--accent)}
+  .sc.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+  .scends{display:flex;justify-content:space-between;max-width:360px;margin:0 auto;font-size:12.5px;color:var(--ink-soft)}
+
+  /* Ecrans info / intro */
+  .info-t{font-size:24px;font-weight:700;text-align:center;line-height:1.3;margin:0 0 14px}
+  @media (max-width:600px){.info-t{font-size:20px}}
+  .info-p{font-size:16px;color:var(--ink-soft);text-align:center;margin:0 auto 10px;max-width:52ch}
+
+  .cta{display:block;margin:26px auto 0;font:inherit;font-size:16px;font-weight:700;padding:15px 30px;border:0;
+    border-radius:12px;background:var(--accent);color:#fff;cursor:pointer;transition:filter .15s}
+  .cta:hover{filter:brightness(1.06)}
+  .cta.navy{background:var(--navy)}
+  .cta[disabled]{opacity:.45;cursor:not-allowed}
+
+  /* Formulaire capture */
+  .capture{max-width:460px;margin:0 auto;width:100%;background:var(--card);border:1px solid var(--line);
+    border-radius:16px;padding:26px;box-shadow:0 10px 30px rgba(31,58,95,.10)}
+  .capture h2{font-size:20px;text-align:center;margin:0 0 6px}
+  .capture .sub{font-size:14px;color:var(--ink-soft);text-align:center;margin:0 0 18px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:480px){.row2{grid-template-columns:1fr}}
+  .fld{margin-bottom:12px}
+  .fld label{display:block;font-size:12.5px;font-weight:600;margin-bottom:4px}
+  .fld input{width:100%;font:inherit;font-size:15px;padding:11px 12px;border:1px solid var(--line-strong);
+    border-radius:9px;background:var(--paper);color:var(--ink)}
+  .fld input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(224,72,61,.14)}
+  .consent{display:flex;gap:8px;font-size:12px;color:var(--ink-soft);margin:6px 0 14px}
+  .consent input{margin-top:2px;width:15px;height:15px;flex:none;accent-color:var(--accent)}
+  .cmsg{font-size:13px;text-align:center;margin-top:10px;min-height:18px}
+  .cmsg.err{color:var(--red)}
+  .hp{position:absolute;left:-9999px}
+
+  /* Resultats */
+  .results{max-width:760px;margin:0 auto;width:100%}
+  .res-hero{text-align:center;margin-bottom:26px}
+  .res-hero h1{font-size:26px;margin:0 0 8px}
+  .res-hero p{color:var(--ink-soft);margin:0}
+  .globe{font-size:44px;font-weight:800;color:var(--accent);margin:8px 0}
+  .pill{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 20px;margin:0 0 16px;
+    box-shadow:0 1px 0 rgba(0,0,0,.03)}
+  .pill-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .pill-h b{font-size:17px}
+  .pill-pct{font-size:20px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+  .pill-bar{height:9px;background:var(--chip);border-radius:20px;overflow:hidden;margin:8px 0 12px}
+  .pill-bar span{display:block;height:100%;background:var(--accent);border-radius:20px}
+  .pill p{font-size:14px;color:var(--ink-soft);margin:0 0 10px}
+  .pill ul{margin:0;padding-left:18px;font-size:14px}
+  .pill li{margin-bottom:6px}
+  .sectitle{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);
+    text-align:center;margin:34px 0 6px}
+  .res-final{background:var(--navy);color:#fff;border-radius:16px;padding:30px 24px;text-align:center;margin-top:30px}
+  .res-final h2{margin:0 0 10px;font-size:22px}
+  .res-final p{margin:0 auto 6px;max-width:48ch;opacity:.9;font-size:15px}
+  .res-final .cta{background:#fff;color:var(--navy)}
+  .proof{text-align:center;color:var(--ink-soft);font-size:13px;margin:22px 0}
+  .edit{background:#fff6d6;border:1px dashed #d8b24a;color:#7a5b12;border-radius:10px;padding:10px 14px;
+    font-size:12.5px;margin:14px 0;text-align:center}
+
+  .foot{text-align:center;font-size:11px;color:var(--ink-soft);padding:26px 20px;max-width:760px;margin:0 auto;line-height:1.6}
+  .hide{display:none}
+</style>
+</head>
+<body>
+
+  <div class="top"><b>Lab0</b> · Diagnostic de croissance</div>
+
+  <div class="progwrap">
+    <div class="proglabel"><span id="pct">0</span>% complet</div>
+    <div class="progbar"><div class="progfill" id="progfill"></div></div>
+  </div>
+
+  <div class="stage" id="stage"><!-- injecte par JS --></div>
+
+  <div class="foot" id="foot">
+    Ce site ne fait pas partie du site Facebook ni de Facebook, Inc. Il n'est en aucune façon affilié à ou approuvé par Meta.
+  </div>
+
+<script>
+(function(){
+  // ================= CONFIG =================
+  var WEBHOOK_URL = "https://hook.eu1.make.com/g11dcxuc0vz9lk195uk1b3py8ugoo382";
+  var CALENDAR_URL = "https://calendar.app.google/VSPtFwQLM9pYauXv9";
+  // ==========================================
+
+  // Chaque etape. type: intro | info | choice | scale | capture | results
+  var STEPS = [
+    { type:'intro',
+      title:"Obtenez votre plan de croissance personnalisé en 3 minutes.",
+      sub:"Un diagnostic en 4 piliers pour comprendre ce qui bloque vraiment votre entreprise, et quoi faire en priorité.",
+      cta:"Démarrer le diagnostic" },
+
+    { type:'choice', key:'situations', multi:true,
+      q:"Parmi ces situations, lesquelles vivez-vous régulièrement ?",
+      hint:"Plusieurs réponses possibles",
+      options:[
+        {em:'📈', label:"Acquisition : je travaille énormément mais je n'arrive pas à développer mon entreprise comme je veux"},
+        {em:'👥', label:"Délégation : tout repose sur moi, si je m'arrête l'entreprise s'arrête"},
+        {em:'🧩', label:"Structuration : je suis prisonnier de l'opérationnel, pas le temps de penser stratégie"},
+        {em:'💶', label:"Rentabilité : je n'arrive pas à me payer correctement alors que je génère du chiffre"}
+      ]},
+
+    { type:'choice', key:'deja_essaye', multi:true,
+      q:"Qu'avez-vous déjà essayé pour résoudre ces problèmes ?",
+      hint:"Plusieurs réponses possibles",
+      options:[
+        {em:'🤝', label:"Réseau d'affaires (BNI, CCI, clubs...)"},
+        {em:'📣', label:"Agence marketing ou de communication"},
+        {em:'🎓', label:"Formation / accompagnement en ligne"},
+        {em:'🗂️', label:"Structurer seul (tableaux, CRM, automatisation)"},
+        {em:'🧑‍💼', label:"Coach ou consultant individuel"},
+        {em:'🤷', label:"Rien de concret, je ne savais pas par où commencer"}
+      ]},
+
+    { type:'info',
+      title:"On a déjà accompagné de nombreux dirigeants dans votre situation.",
+      p:["Maintenant, zoomons sur ce qui vous freine vraiment dans l'atteinte de vos objectifs."],
+      cta:"Continuer" },
+
+    { type:'choice', key:'depuis_combien', multi:false,
+      q:"Depuis combien de temps cherchez-vous une solution à ces problèmes ?",
+      options:[
+        {label:"Moins de 6 mois"},{label:"6 mois à 1 an"},
+        {label:"1 à 2 ans"},{label:"Plus de 2 ans"}
+      ]},
+
+    { type:'info',
+      title:"Si ces solutions n'ont pas fonctionné pour vous, c'est normal.",
+      p:["Ce qu'il vous faut, c'est une approche qui s'adapte à votre situation. Passons au diagnostic, pilier par pilier."],
+      cta:"Lancer le diagnostic" },
+
+    // --- ACQUISITION ---
+    { type:'scale', key:'acq1', pillar:'Acquisition',
+      q:"Je suis capable de prédire mon chiffre d'affaires à la fin de l'année, parce que j'ai des systèmes d'acquisition prévisibles en place." },
+    { type:'scale', key:'acq2', pillar:'Acquisition',
+      q:"Je n'ai plus besoin de courir après les clients : ce sont eux qui viennent à moi grâce à ma stratégie marketing." },
+
+    { type:'info',
+      title:"Vos réponses sont intéressantes.",
+      p:["On repère déjà plusieurs points qui vous empêchent aujourd'hui de développer votre entreprise."],
+      cta:"Continuer le diagnostic" },
+
+    // --- PROCESS ---
+    { type:'scale', key:'pro1', pillar:'Process',
+      q:"Les tâches clés de mon entreprise suivent un mode d'emploi écrit, que n'importe qui pourrait suivre (pas seulement dans ma tête)." },
+    { type:'scale', key:'pro2', pillar:'Process',
+      q:"J'ai automatisé les tâches répétitives (facturation, relances, reporting, IA...) pour gagner du temps." },
+
+    // --- DELEGATION ---
+    { type:'scale', key:'del1', pillar:'Délégation',
+      q:"Si je m'absente 2 semaines, mon entreprise continue de tourner sans que la qualité baisse et sans que je sois joignable en permanence." },
+    { type:'scale', key:'del2', pillar:'Délégation',
+      q:"Je peux confier une mission importante à quelqu'un sans devoir tout revérifier derrière." },
+
+    { type:'info',
+      title:"Nous avons déjà des pistes pour vous aider à atteindre vos objectifs cette année.",
+      p:["Encore quelques questions et votre plan d'action sera prêt."],
+      cta:"Continuer" },
+
+    // --- PILOTAGE ---
+    { type:'scale', key:'pil1', pillar:'Pilotage',
+      q:"Je dors tranquille la nuit : je sais exactement où en est ma trésorerie et j'ai de la visibilité sur les semaines qui viennent." },
+    { type:'scale', key:'pil2', pillar:'Pilotage',
+      q:"Je connais précisément ma marge, mon seuil de rentabilité et le coût d'acquisition de mes clients." },
+
+    // --- PROFIL ---
+    { type:'choice', key:'ca', multi:false,
+      q:"Quel est le chiffre d'affaires annuel de votre entreprise ?",
+      options:[
+        {label:"Moins de 100 000 €"},{label:"100 000 à 300 000 €"},
+        {label:"300 000 à 500 000 €"},{label:"500 000 € à 1 M€"},{label:"Plus de 1 M€"}
+      ]},
+    { type:'choice', key:'objectif', multi:false,
+      q:"Quel est votre objectif de chiffre d'affaires pour 2026 ?",
+      options:[
+        {label:"Le stabiliser"},{label:"L'augmenter de 20 à 50 %"},
+        {label:"Le doubler"},{label:"Le multiplier par 3 ou plus"}
+      ]},
+    { type:'choice', key:'heures', multi:false,
+      q:"Combien d'heures travaillez-vous par semaine, en moyenne ?",
+      options:[
+        {label:"Moins de 40h"},{label:"41 à 50h"},
+        {label:"51 à 60h"},{label:"Plus de 60h"}
+      ]},
+    { type:'choice', key:'ressenti', multi:false,
+      q:"Honnêtement, comment vous sentez-vous avec ce rythme ?",
+      options:[
+        {em:'😀', label:"Ça va, je gère"},
+        {em:'😐', label:"C'est compliqué, je tiens"},
+        {em:'😣', label:"Ça ne va pas du tout"}
+      ]},
+    { type:'choice', key:'etat_esprit', multi:false,
+      q:"Quelle phrase décrit le mieux votre état d'esprit aujourd'hui ?",
+      options:[
+        {label:"Je suis prêt à investir du temps et de l'argent pour améliorer ma situation"},
+        {label:"Je suis motivé, j'ai besoin d'un cadre et d'une vision claire"},
+        {label:"Je veux d'abord comprendre ce qui bloque avant de m'engager"}
+      ]},
+    { type:'choice', key:'resultat_12m', multi:false,
+      q:"Dans 12 mois, quel résultat changerait la donne pour vous ?",
+      options:[
+        {em:'⚙️', label:"Avoir un système d'acquisition prévisible"},
+        {em:'👥', label:"Sortir de l'opérationnel et recruter une équipe"},
+        {em:'⏳', label:"Passer sous 40h/semaine tout en maintenant mon CA"},
+        {em:'💶', label:"Sécuriser ma rentabilité pour enfin me payer correctement"}
+      ]},
+
+    { type:'info',
+      title:"Votre plan d'action est prêt. Êtes-vous prêt à le recevoir ?",
+      p:["Entrez vos coordonnées pour accéder à votre diagnostic complet et à votre plan d'action personnalisé."],
+      cta:"Oui, je veux mon diagnostic 🚀" },
+
+    { type:'capture' },
+    { type:'results' }
+  ];
+
+  // Contenu du plan d'action par pilier (edite librement)
+  var PLAN = {
+    'Acquisition':{
+      intro:"Votre acquisition n'est pas encore prévisible ou stable : elle dépend trop de vous ou du contexte.",
+      actions:[
+        "Choisir 1 canal prioritaire (le plus fort potentiel) et le tenir 30 jours sans se disperser.",
+        "Clarifier 1 offre et 1 promesse, et les utiliser partout.",
+        "Mettre en place un tableau de bord d'acquisition hebdo : 3 chiffres clés (entrants, demandes, clients) et une règle de décision."
+      ]},
+    'Process':{
+      intro:"Votre entreprise dépend trop de vous et de la façon dont chacun fait les choses. Résultat : plus de temps perdu et plus d'erreurs.",
+      actions:[
+        "Lister les 10 tâches récurrentes (vente, suivi, facturation...) et repérer les 3 plus chronophages.",
+        "Écrire un mode d'emploi simple pour ces 3 tâches (étapes + qui fait quoi), accessible à toute l'équipe.",
+        "Ajouter des checklists et des points courts pour arrêter les oublis et les allers-retours."
+      ]},
+    'Délégation':{
+      intro:"Vous gérez encore beaucoup de choses vous-même. L'entreprise avance moins vite, et vous vous épuisez.",
+      actions:[
+        "Choisir 2 missions dont sortir cette semaine (celles qui vous prennent le plus de temps) et décider qui s'en occupe.",
+        "Écrire une fiche simple par rôle : mission, tâches, résultat attendu.",
+        "Mettre un point hebdo de pilotage de 20 min : fait / bloqué / prochaine action."
+      ]},
+    'Pilotage':{
+      intro:"Vous pilotez encore trop au ressenti. Sans chiffres clairs, difficile de savoir quoi corriger en priorité.",
+      actions:[
+        "Choisir 5 chiffres à suivre chaque semaine (prospects, ventes, marge, cash, satisfaction).",
+        "Faire un point hebdo de 30 min : lire les chiffres, repérer ce qui baisse, décider une action.",
+        "Poser une règle : si un chiffre passe sous un seuil, on agit tout de suite."
+      ]}
+  };
+  var PILLARS = ['Acquisition','Process','Délégation','Pilotage'];
+
+  var idx = 0;
+  var answers = {};
+  var stage = document.getElementById('stage');
+
+  function setProgress(){
+    var p = Math.round(idx / (STEPS.length - 1) * 100);
+    document.getElementById('pct').textContent = p;
+    document.getElementById('progfill').style.width = p + '%';
+  }
+
+  function el(tag, cls, html){ var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; }
+  function next(){ if(idx < STEPS.length-1){ idx++; render(); } }
+  function back(){ if(idx > 0){ idx--; render(); } }
+
+  function addBack(){
+    if(idx===0) return;
+    var b = el('button','back','← Retour'); b.onclick = back; stage.appendChild(b);
+  }
+
+  function render(){
+    var s = STEPS[idx];
+    stage.innerHTML = '';
+    setProgress();
+    window.scrollTo(0,0);
+    document.getElementById('foot').classList.toggle('hide', s.type==='results');
+
+    if(s.type==='intro' || s.type==='info'){
+      if(s.type==='info') addBack();
+      stage.appendChild(el('h1', s.type==='intro'?'q':'info-t', s.title));
+      if(s.sub) stage.appendChild(el('p','qsub', s.sub));
+      if(s.p) s.p.forEach(function(t){ stage.appendChild(el('p','info-p', t)); });
+      var c = el('button','cta', s.cta); c.onclick = next; stage.appendChild(c);
+      return;
+    }
+
+    if(s.type==='choice'){
+      addBack();
+      stage.appendChild(el('h2','q', s.q));
+      if(s.hint) stage.appendChild(el('p','hint', s.hint));
+      var grid = el('div','opts' + (s.options.length>4||!s.multi&&s.options.some(function(o){return o.label.length>40;})?' single-col':''));
+      if(s.options.length>4 || longOpts(s.options)) grid.classList.add('single-col');
+      var current = answers[s.key] || (s.multi?[]:null);
+      s.options.forEach(function(o){
+        var b = el('button','opt', (o.em?'<span class="em">'+o.em+'</span>':'') + '<span>'+o.label+'</span>');
+        if(s.multi ? current.indexOf(o.label)>-1 : current===o.label) b.classList.add('sel');
+        b.onclick = function(){
+          if(s.multi){
+            var arr = answers[s.key] || [];
+            var i = arr.indexOf(o.label);
+            if(i>-1) arr.splice(i,1); else arr.push(o.label);
+            answers[s.key]=arr; render();
+          } else {
+            answers[s.key]=o.label; next();
+          }
+        };
+        grid.appendChild(b);
+      });
+      stage.appendChild(grid);
+      if(s.multi){
+        var c = el('button','cta', 'Continuer');
+        c.disabled = !(answers[s.key] && answers[s.key].length);
+        c.onclick = next; stage.appendChild(c);
+      }
+      return;
+    }
+
+    if(s.type==='scale'){
+      addBack();
+      stage.appendChild(el('p','hint','À quel point cette phrase vous parle ?'));
+      stage.appendChild(el('h2','q', s.q));
+      var sc = el('div','scale');
+      for(var n=1;n<=5;n++){(function(n){
+        var b = el('button','sc', n);
+        if(answers[s.key]===n) b.classList.add('sel');
+        b.onclick = function(){ answers[s.key]=n; next(); };
+        sc.appendChild(b);
+      })(n);}
+      stage.appendChild(sc);
+      var ends = el('div','scends'); ends.appendChild(el('span',null,'Pas du tout')); ends.appendChild(el('span',null,'Tout à fait'));
+      stage.appendChild(ends);
+      return;
+    }
+
+    if(s.type==='capture'){ renderCapture(); return; }
+    if(s.type==='results'){ renderResults(); return; }
+  }
+
+  function longOpts(opts){ return opts.some(function(o){ return o.label.length>44; }); }
+
+  function renderCapture(){
+    addBack();
+    var pct = overallPct();
+    stage.appendChild(el('h2','q','Votre entreprise est à '+pct+'% de son plein potentiel.'));
+    stage.appendChild(el('p','qsub','Entrez vos coordonnées pour recevoir votre plan d\'action détaillé.'));
+    var box = el('div','capture');
+    box.innerHTML =
+      '<form id="capForm">'+
+      '<input type="text" name="website" class="hp" tabindex="-1" autocomplete="off">'+
+      '<div class="row2">'+
+        '<div class="fld"><label>Prénom</label><input name="prenom" type="text" required></div>'+
+        '<div class="fld"><label>Nom</label><input name="nom" type="text" required></div>'+
+      '</div>'+
+      '<div class="fld"><label>Email</label><input name="email" type="email" required></div>'+
+      '<div class="fld"><label>Téléphone portable</label><input name="tel" type="tel" inputmode="tel" placeholder="06 12 34 56 78" required></div>'+
+      '<label class="consent"><input type="checkbox" id="rgpd" required><span>J\'accepte d\'être recontacté au sujet de mon diagnostic.</span></label>'+
+      '<button class="cta" type="submit" style="width:100%" id="capBtn">Obtenir mon plan d\'action personnalisé</button>'+
+      '<div class="cmsg" id="capMsg"></div>'+
+      '</form>';
+    stage.appendChild(box);
+
+    var f = box.querySelector('#capForm');
+    f.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(f.website.value){ next(); return; } // honeypot
+      if(!box.querySelector('#rgpd').checked){ setCapMsg('Merci de cocher la case pour continuer.'); return; }
+      answers.prenom=f.prenom.value; answers.nom=f.nom.value; answers.email=f.email.value; answers.telephone=f.tel.value;
+      var btn = box.querySelector('#capBtn'); btn.disabled=true; btn.textContent='Envoi...';
+      sendLead(function(){ next(); });
+    });
+    function setCapMsg(t){ var m=box.querySelector('#capMsg'); m.textContent=t; m.className='cmsg err'; }
+  }
+
+  function pillarPct(pillar){
+    var keys = STEPS.filter(function(s){return s.type==='scale' && s.pillar===pillar;}).map(function(s){return s.key;});
+    var vals = keys.map(function(k){return answers[k];}).filter(function(v){return typeof v==='number';});
+    if(!vals.length) return 0;
+    var avg = vals.reduce(function(a,b){return a+b;},0)/vals.length;
+    return Math.round(avg/5*100);
+  }
+  function overallPct(){
+    var arr = PILLARS.map(pillarPct);
+    return Math.round(arr.reduce(function(a,b){return a+b;},0)/arr.length);
+  }
+
+  function sendLead(done){
+    var p = new URLSearchParams();
+    p.append('source','diagnostic-lab0');
+    p.append('page', location.href);
+    Object.keys(answers).forEach(function(k){
+      var v = answers[k]; p.append(k, Array.isArray(v)? v.join(' | ') : v);
+    });
+    PILLARS.forEach(function(pl){ p.append('score_'+pl.toLowerCase().replace('é','e'), pillarPct(pl)); });
+    p.append('score_global', overallPct());
+    var finished=false; var go=function(){ if(!finished){ finished=true; done(); } };
+    fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},
+      body:p.toString(),keepalive:true}).then(go).catch(go);
+    setTimeout(go, 2500); // securite : on n'attend jamais indefiniment
+  }
+
+  function renderResults(){
+    var g = overallPct();
+    var r = el('div','results');
+    var hero = el('div','res-hero');
+    hero.appendChild(el('h1', 'Félicitations '+ (answers.prenom||'') +' !'));
+    hero.appendChild(el('p','Voici votre diagnostic et votre plan d\'action personnalisé.'));
+    hero.appendChild(el('div','globe', g+'%'));
+    hero.appendChild(el('p','Niveau de maturité global de votre entreprise.'));
+    r.appendChild(hero);
+
+    r.appendChild(el('div','edit','Zone à personnaliser : ajoutez ici vos vrais chiffres (nb de dirigeants accompagnés) et vos vrais témoignages clients avant de lancer la pub.'));
+
+    r.appendChild(el('div','sectitle','Partie 1 · Votre diagnostic en 4 piliers'));
+    PILLARS.forEach(function(pl){
+      var pct = pillarPct(pl);
+      var plan = PLAN[pl];
+      var c = el('div','pill');
+      var h = el('div','pill-h'); h.appendChild(el('b', pl)); h.appendChild(el('span','pill-pct', pct+'%')); c.appendChild(h);
+      var bar = el('div','pill-bar'); var span=el('span'); span.style.width=pct+'%'; bar.appendChild(span); c.appendChild(bar);
+      c.appendChild(el('p', plan.intro));
+      var ul = el('ul'); plan.actions.forEach(function(a){ ul.appendChild(el('li', a)); }); c.appendChild(ul);
+      r.appendChild(c);
+    });
+
+    r.appendChild(el('div','proof','Plus de [XX] dirigeants accompagnés par Lab0. (Remplacez par votre chiffre réel.)'));
+
+    var fin = el('div','res-final');
+    fin.appendChild(el('h2','Prêt à transformer ce diagnostic en résultats concrets ?'));
+    fin.appendChild(el('p','Réservez votre appel stratégique offert avec un expert Lab0. Vous repartez avec les priorités claires pour votre entreprise.'));
+    var cta = el('a','cta','Réserver mon appel stratégique offert');
+    cta.href = CALENDAR_URL; cta.target='_blank'; cta.rel='noopener'; cta.style.textDecoration='none';
+    fin.appendChild(cta);
+    r.appendChild(fin);
+
+    stage.appendChild(r);
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
