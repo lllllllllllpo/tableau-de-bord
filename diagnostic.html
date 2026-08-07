@@ -166,6 +166,16 @@
   .testi-q{font-size:14.5px;color:var(--ink);margin:0 0 12px;line-height:1.55;font-style:italic}
   .testi-a{font-size:12.5px;font-weight:700;color:var(--navy);margin:0}
 
+  /* Bloc fondateur */
+  .founder{display:flex;align-items:center;gap:18px;background:var(--card);border:1px solid var(--line);
+    border-radius:16px;padding:18px 20px;margin:24px 0 0;box-shadow:var(--shadow-sm)}
+  .founder-img{width:78px;height:78px;flex:none;border-radius:50%;object-fit:cover;object-position:center 12%;
+    border:2px solid var(--navy-tint);background:#0d1117}
+  .founder-txt{display:flex;flex-direction:column;gap:5px}
+  .founder-txt b{font-size:15.5px;color:var(--ink);line-height:1.3}
+  .founder-txt span{font-size:13px;color:var(--ink-soft);line-height:1.5}
+  @media (max-width:600px){.founder{flex-direction:column;text-align:center;gap:12px}}
+
   .foot{text-align:center;font-size:11px;color:var(--ink-soft);padding:28px 20px;max-width:780px;margin:0 auto;line-height:1.6}
   .foot a{color:var(--navy)}
   .hide{display:none}
@@ -653,6 +663,12 @@
       tw.appendChild(tc);
     });
     r.appendChild(tw);
+
+    var founder = el('div','founder');
+    founder.innerHTML = '<img src="images/julien-breal.png" alt="Julien Bréal, fondateur de Lab0" class="founder-img" loading="lazy">'+
+      '<div class="founder-txt"><b>Vous échangerez avec Julien Bréal, fondateur de Lab0</b>'+
+      '<span>50 entreprises accompagnées. Pas de commercial ni d\'argumentaire forcé, juste un regard d\'expert sur vos priorités.</span></div>';
+    r.appendChild(founder);
 
     var fin = el('div','res-final');
     fin.appendChild(el('h2', null, "Prêt à transformer ce diagnostic en résultats concrets ?"));
